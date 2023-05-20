@@ -93,7 +93,7 @@ use Joomla\CMS\Language\Text;
 
     public function onAjaxPluginMicroservicios(){
         //verificamos el token del formulario
-        //Session::getFormToken() or jexit(Text::_('Token no valido'));
+        Session::getFormToken() or jexit(Text::_('Token no valido'));
 
         $input = $this->app->input;
         $accion = $input->get('accion', '', 'cmd');

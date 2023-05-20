@@ -1,0 +1,52 @@
+@use "base";
+
+.projected-earnings-container {
+  @extend %container-borders;
+}
+
+.projected-earnings-amount {
+  @include base.container-title(1rem);
+  margin: 1rem 0;
+}
+
+.projected-earnings-box {
+  @extend %container-borders;
+  text-align: center;
+}
+
+#projected-earnings-linear {
+  @include base.chart(13vh);
+}
+
+@media (min-width: 768px) {
+  #projected-earnings-linear {
+    height: 18vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  #projected-earnings-linear {
+    height: 25vh;
+  }
+}
+
+@media (min-width: 1280px) {
+  .projected-earnings-container {
+    display: flex;
+    flex-direction: column;
+    //align-items: center;
+
+    width: 23vw;
+    margin: 1rem 0 0 1rem;
+  }
+
+  #projected-earnings-linear {
+    height: 30vh;
+    width: 100%;
+    margin: auto 0;
+  }
+
+  .projected-earnings-amount {
+    font-size: 2rem;
+  }
+}

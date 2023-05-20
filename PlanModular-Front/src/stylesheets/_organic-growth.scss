@@ -1,0 +1,77 @@
+@use 'base';
+
+.organic-growth-container {
+  @extend %container-borders;
+}
+
+.organic-growth-pie-chart-container {
+  @extend %pie-container
+}
+
+.organic-growth-container-title {
+    @include base.container-title;
+}
+
+#organic-growth-pie {
+  @include base.chart;
+}
+
+#organic-growth-linear {
+  @include base.chart(13vh);
+}
+
+@media (min-width: 540px) {
+  .organic-growth-container {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 50vw;
+    margin: 1rem 1rem 0rem 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  #organic-growth-linear {
+    width: 100%;
+  }
+}
+
+@media (min-width: 1024px) {
+  #organic-growth-linear {
+    height: 25vh;
+  }
+
+  #organic-growth-pie {
+    height: 30vh;
+  }
+}
+
+@media (min-width: 1280px) {
+
+  .organic-growth-title-pie-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+  }
+
+  .organic-growth-container {
+    width: 25vw;
+    margin: 1rem 0.5rem 0rem 1rem;
+  }
+
+  .organic-growth-container-title {
+    margin: auto;
+  }
+
+  #organic-growth-pie {
+    margin-top: 1rem;
+    height: 15vh;
+    width: 10vw;
+  }
+
+  #organic-growth-linear {
+    height: 15vh;
+  }
+}

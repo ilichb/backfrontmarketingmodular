@@ -1,0 +1,27 @@
+@use "base";
+
+.socials-container {
+    @extend %container-borders;
+}
+
+#socials-radar {
+  @include base.chart(30vh);
+}
+
+@media (min-width: 1024px) {
+  #socials-radar,  {
+    height: 40vh;
+  }
+}
+
+@media (min-width: 1280px) {
+  .socials-container {
+    width: 20vw;
+    margin: 1rem 0.5rem 0 1rem;
+  }
+
+  #socials-radar,  {
+    height: 30vh;
+    width: 100%;
+  }
+}

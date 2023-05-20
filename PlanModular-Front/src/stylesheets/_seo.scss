@@ -1,0 +1,51 @@
+@use 'base';
+
+.seo-container {
+    @extend %container-borders;
+}
+
+.seo-pie-chart-container{
+    @extend %pie-container;
+}
+
+#seo-pie {
+    @include base.chart;
+}
+
+@media (min-width: 540px) {
+    .seo-container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+        margin: 0rem 1rem 0rem 0.5rem;
+        width: 40vw;
+    }
+    #seo-pie {
+        width: 30vw;
+        margin-top: 1rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    #seo-pie,  {
+        height: 35vh;
+    }
+}
+
+@media (min-width: 1280px) {
+    .seo-container {
+        display: flex;
+        flex-direction: column-reverse;
+        width: 20vw;
+        margin: 1rem 1rem 0rem 1rem;
+    }
+
+    #seo-pie {
+        margin-top: 1rem;
+        height: 20vh;
+        width: 10vw;
+    }
+
+}

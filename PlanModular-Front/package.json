@@ -1,0 +1,22 @@
+{
+  "name": "pma-front",
+  "version": "1.0.0",
+  "description": "Sistema de marketing modular solo frontend",
+  "private": true,
+  "scripts": {
+    "bundle": "webpack --mode production && sass src/stylesheets/main.scss styles.css",
+    "sass": "sass --watch src/stylesheets/main.scss styles.css",
+    "webpack": "webpack --mode development --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.62.1",
+    "webpack": "^5.81.0",
+    "webpack-cli": "^5.0.2"
+  },
+  "dependencies": {
+    "@amcharts/amcharts5": "^5.3.12",
+    "@amcharts/amcharts5-geodata": "^5.1.0"
+  }
+}

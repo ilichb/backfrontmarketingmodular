@@ -1,0 +1,109 @@
+@use "base";
+@use 'branding';
+@use 'organic-growth';
+@use "map";
+@use "total-growth";
+@use "seo";
+@use "socials";
+@use "bounce-rate";
+@use "sales";
+@use "projected-earnings";
+@use "form";
+
+.amcharts-credits, .andromeda-credits {
+  margin: 0;
+  text-align: center;
+}
+
+.footer {
+  margin-top: 1rem;
+
+  a {
+    color: black;
+  }
+}
+
+.container-title {
+  @include base.container-title;
+}
+
+.pie-percentage {
+  @include base.pie-percentage;
+}
+
+@media (min-width: 540px) {
+  .container-title, .branding-container-title, .organic-growth-container-title, .total-growth-container-title {
+    font-size: 1.2rem;
+  }
+
+  .branding-organic-growth-container, .total-growth-seo-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .pie-percentage {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .container-title, .branding-container-title, .organic-growth-container-title, .total-growth-container-title {
+    font-size: 1.8rem;
+  }
+
+  .pie-percentage {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pie-percentage {
+    font-size: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dashboard {
+    display: flex;
+  }
+
+  .left-container {
+    width: 50vw;
+  }
+
+  .right-container{
+    width: 50vw;
+  }
+
+  .left-top, .left-down {
+    display: flex;
+  }
+
+  .branding-organic-growth-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 25vw;
+    margin: 0rem 1rem 0rem 0rem;
+  }
+
+  .container-title, .branding-container-title, .organic-growth-container-title, .total-growth-container-title {
+    font-size: base.$default-title-font-size;
+  }
+
+  .pie-percentage {
+    font-size: base.$default-title-font-size;
+  }
+
+  .socials-bounce-container {
+    display: flex;
+    flex-direction: row;
+    width: 45vw;
+  }
+
+  .sales-projected-earnings-container {
+    display: flex;
+    flex-direction: row;
+    width: 45vw;
+  }
+}

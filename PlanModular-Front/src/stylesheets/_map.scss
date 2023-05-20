@@ -1,0 +1,45 @@
+@use 'base';
+
+.potential-reach-container {
+  @extend %container-borders;
+}
+
+#potential-reach-map {
+  height: 20vh;
+}
+
+@media (min-width: 540px) {
+  #potential-reach-map,  {
+    height: 25vh;
+  }
+}
+
+@media (min-width: 768px) {
+  #potential-reach-map,  {
+    height: 35vh;
+  }
+}
+
+@media (min-width: 768px) {
+  #potential-reach-map,  {
+    height: 40vh;
+  }
+}
+
+@media (min-width: 1024px) {
+  #potential-reach-map,  {
+    height: 45vh;
+  }
+}
+
+@media (min-width: 1280px) {
+  .potential-reach-container,  {
+    width: 25vw;
+    margin: 1rem 0rem 0 1rem;
+  }
+
+  #potential-reach-map,  {
+    height: 60vh;
+  }
+
+}

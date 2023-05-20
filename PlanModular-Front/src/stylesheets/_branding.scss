@@ -1,0 +1,68 @@
+@use 'base';
+
+.branding-container {
+  @extend %container-borders;
+}
+
+.branding-chart-container {
+  @extend %pie-container;
+}
+
+.branding-container-title {
+    @include base.container-title;
+}
+
+#branding-pie {
+  @include base.chart;
+}
+
+.pie-percentage {
+  @include base.pie-percentage;
+}
+
+@media (min-width: 540px) {
+
+  .branding-container {
+    display: flex;
+    flex-direction: column;
+    //flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    width: 50vw;
+    margin: 1rem 0.5rem 0rem 1rem;
+  }
+
+  #branding-pie {
+    margin-top: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  #branding-pie,  {
+    height: 35vh;
+  }
+}
+
+@media (min-width: 1280px) {
+  .branding-container {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 25vw;
+    margin: 1rem 0.5rem 0rem 1rem;
+  }
+
+  #branding-pie {
+    margin-top: 1rem;
+    height: 20vh;
+    width: 10vw;
+  }
+
+  .branding-container-title {
+    margin: auto;
+
+  }
+  //#branding-pie {
+  //  height: base.$default-height-chart;
+  //}
+
+}

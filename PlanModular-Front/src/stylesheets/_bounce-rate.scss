@@ -1,0 +1,27 @@
+@use 'base';
+
+.bounce-container {
+    @extend %container-borders;
+}
+
+#bounce-bar {
+    @include base.chart;
+}
+
+@media (min-width: 1024px) {
+    #bounce-bar,  {
+        height: 25vh;
+    }
+}
+
+@media (min-width: 1280px) {
+    .bounce-container,  {
+        width: 23vw;
+        margin: 1rem 0 0 0.5rem;
+    }
+
+    #bounce-bar,  {
+        height: 30vh;
+        width: 100%;
+    }
+}
