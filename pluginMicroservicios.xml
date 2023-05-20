@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="4" type="plugin" group="system" method="upgrade">
+    <name>plg_system_pluginMicroservicios</name>
+    <creationDate>Abril 2023</creationDate>
+    <author>Equipo 2 - Andromeda</author>
+    <copyright>Copyright (c) 2023 Equipo 2 Andromeda. Todos los derechos reservados</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE</license>
+    <version>1.0.0</version>
+    <description>Plugin de microservicios que ayudara a los clientes a crear un plan de negocios para mejorar sus empresas</description>
+    <files>
+        <filename plugin="pluginMicroservicios">pluginMicroservicios.php</filename>
+		<filename>index.html</filename>
+        <folder>algoritmo</folder>
+        <folder>css</folder>
+        <folder>database</folder>
+        <folder>js</folder>
+        <folder>PlanModular-Front</folder>
+        <folder>sql</folder>
+        <folder>tmpl</folder>
+    </files>
+    <language tag="en-GB">language/en-GB/en-GB.plg_system_pluginMicroservicios.ini</language>
+    <install>
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install.mysql.utf8.sql</file>
+        </sql>
+    </install>
+    <config>
+        <!-- podemos poner configuraciones para el administrador-->
+    </config>
+</extension>
