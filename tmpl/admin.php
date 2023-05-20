@@ -55,6 +55,8 @@ $microservicios = $dataBase->getMicroservicios();
                     <input type="hidden" name="tipo" value="guardar_categoria" id='tipo_categoria'>
                     <label for="agregar_nombre_categoria">Nombre: </label>    
                     <input type="text" name="agregar_nombre_categoria" id="agregar_nombre_categoria" placeholder="nombre de la categoria" />
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit">Agregar</button>
                 </form>
             </div>
@@ -66,6 +68,8 @@ $microservicios = $dataBase->getMicroservicios();
                     <input type="hidden" name="caso" value="editar_categoria" />
                     <label for="editar_nombre_categoria">Nombre: </label>
                     <input type="text" name="editar_categoria_nombre" id="editar_categoria_nombre" />
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit">Actualizar</button>
                 </form>
             </div>

@@ -13,7 +13,7 @@
     <meta charset="UTF-8">
     <title>Andromeda</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="styles.css" />
+    <link rel="stylesheet" type="text/css" href="plugins/system/pluginMicroservicios/PlanModular-Front/styles.css" />
 </head>
 <body>
     <div class="main">
@@ -136,6 +136,6 @@
         let countriesList = <?= $countries_list ?>;
         let sales = <?= $sales ?>;
     </script>
-    <script src="bundle.js"></script>
+    <script src="plugins/system/pluginMicroservicios/PlanModular-Front/bundle.js"></script>
 </body>
 </html>
