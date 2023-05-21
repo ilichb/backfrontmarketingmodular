@@ -9,10 +9,36 @@
 @use "sales";
 @use "projected-earnings";
 @use "form";
+@use "signup-form";
 
 .amcharts-credits, .andromeda-credits {
   margin: 0;
   text-align: center;
+}
+
+.d-hidden {
+  display: none;
+}
+
+.d-visible {
+  display: block;
+}
+
+.f-hidden {
+  display: none;
+}
+//
+//.f-visible {
+//  display: relative;
+//}
+
+#reset-form {
+  text-align: center;
+  font-size: large;
+  font-family: base.$font-stack;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .footer {
@@ -63,7 +89,11 @@
 }
 
 @media (min-width: 1280px) {
-  .dashboard {
+  .d-visible {
+    display: block;
+  }
+
+  .panel {
     display: flex;
   }
 

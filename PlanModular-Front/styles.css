@@ -400,7 +400,7 @@
     font-size: 2rem;
   }
 }
-.form {
+#form {
   margin: 1rem 1rem;
 }
 
@@ -452,7 +452,7 @@
   text-align: center;
 }
 
-#sector-container, #country-container, #service-value-container, #services-container {
+#sector-container, #country-container, #service-value-container, #services-container, .sub-service-content {
   margin: 2rem;
 }
 
@@ -462,7 +462,7 @@
 }
 
 @media (min-width: 768px) {
-  .detailed-sector-button {
+  .detailed-sector-button, .sub-service-container {
     margin: 0.5rem;
     font-size: large;
   }
@@ -472,7 +472,7 @@
   }
 }
 @media (min-width: 1280px) {
-  .form {
+  .f-visible {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -482,13 +482,70 @@
     display: flex;
     flex-direction: row;
   }
-  #sector, #country, #service-value {
+  .buttons-container button {
     margin: 0 1rem;
   }
 }
+#signup-form {
+  margin: 1rem 2rem;
+}
+
+.su-hidden {
+  display: none;
+}
+
+.su-visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 2rem;
+}
+
+#submit-signup-button {
+  margin-top: 2rem;
+}
+
+.t-hidden {
+  display: none;
+}
+
+.t-visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.t-visible p {
+  margin-bottom: 0;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  font-size: large;
+  text-align: center;
+}
+
 .amcharts-credits, .andromeda-credits {
   margin: 0;
   text-align: center;
+}
+
+.d-hidden {
+  display: none;
+}
+
+.d-visible {
+  display: block;
+}
+
+.f-hidden {
+  display: none;
+}
+
+#reset-form {
+  text-align: center;
+  font-size: large;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .footer {
@@ -550,7 +607,10 @@
   }
 }
 @media (min-width: 1280px) {
-  .dashboard {
+  .d-visible {
+    display: block;
+  }
+  .panel {
     display: flex;
   }
   .left-container {
