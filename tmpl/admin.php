@@ -172,12 +172,13 @@ $sectores = $dataBase->getSectorEconomico();
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $micro->nombre; ?></td>
-                                <td><?php echo $micro->valor_impacto; ?></td>
-                                <td><?php echo $micro->valor_de_costo; ?></td>
+                                <td><?php echo $micro->valor_impacto; ?> %</td>
+                                <td><?php echo $micro->valor_de_costo; ?> EUR</td>
                                 <td><?php echo $micro->servicio; ?></td>
                                 <td>
                                     <button type="button" id="datos_editar_microservicios" data-id='<?php echo $micro->id; ?>' data-nombre='<?php echo $micro->nombre; ?>' data-valor-impacto='<?php echo $micro->valor_impacto; ?>' data-valor-costo='<?php echo $micro->valor_de_costo; ?>' data-servicio='<?php echo $micro->servicio_id; ?>'>Edit</button>
-                                </td>
+                                </td>	
+
                             </tr>      
                             <?php endforeach; ?>
                         </tbody>

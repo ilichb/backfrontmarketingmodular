@@ -61,7 +61,7 @@ use Joomla\CMS\Language\Text;
              }
          } else {
              $document->addStyleSheet('plugins/system/pluginMicroservicios/PlanModular-Front/styles.css');
-             $document->addScript('plugins/system/pluginMicroservicios/PlanModular-Front/src/bundle.js');
+             $document->addScript('plugins/system/pluginMicroservicios/PlanModular-Front/bundle.js');
              
              if($context === 'com_content.article'){
                  if(strpos($article->text, '{microserviciosForm}') === false){
