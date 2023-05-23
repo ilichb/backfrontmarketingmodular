@@ -51,7 +51,7 @@ class DataBase
                 $columns = ['nombre', 'categoria_id'];
     
                 $values = [$this->db->quote($data['nombre']), $this->db->quote($data['categoria_id'])];
-    
+
                 $query->insert($this->db->quoteName('servicios'))
                 ->columns($this->db->quoteName($columns))
                 ->values(implode(',', $values));
@@ -69,6 +69,16 @@ class DataBase
                 ->columns($this->db->quoteName($columns))
                 ->values(implode(',', $values));
                 break;
+            
+            case 'sector_economico':
+                $columns = ['nombre', 'recomendaciones'];
+
+                $values = [$this->db->quote($data['nombre']), $this->db->quote($data['recomendaciones'])];
+
+                $query->insert($this->db->quoteName('sector_economico'))
+                ->columns($this->db->quoteName($columns))
+                ->values(implode(',', $values));
+                break;
 
             default:
                 break;
@@ -76,6 +86,34 @@ class DataBase
         
         $this->db->setQuery($query);
         $this->db->execute();
+
+        if($tablaDb === 'sector_economico'){
+            $sectorId = $this->db->insertId();
+
+            $this->guardarRelacion(intval($sectorId), $data['microservicio_id']);
+        }
+        $query->clear();
+    }
+
+    protected function guardarRelacion($sectorId, $microservicios){
+
+        $query = $this->db->getQuery(true);
+
+        //relacionamos con los microservicios
+         $columns = ['sector_id', 'microservicio_id'];
+
+         foreach ($microservicios as $microservicioId) {
+             //otra forma de hacerlo
+             $values = array($this->db->quote($sectorId), $this->db->quote($microservicioId));
+
+             $query->insert($this->db->quoteName('sector_microservicios'))
+             ->columns($this->db->quoteName($columns))
+             ->values(implode(',', $values));
+
+             $this->db->setQuery($query);
+             $this->db->execute();
+             $query->clear();
+         }
     }
 
     protected function editar($data, $tablaDb){
@@ -131,12 +169,65 @@ class DataBase
                 ->where($condiciones);
                 break;
             
+            case 'sector_economico':
+
+                $datos = array(
+                    $this->db->quoteName('nombre').'='.$this->db->quote($data['nombre']),
+                    $this->db->quoteName('recomendaciones').'='.$this->db->quote($data['recomendaciones'])
+                );
+        
+                $condiciones = array(
+                    $this->db->quoteName('id').'='.$this->db->quote($data['id'])
+                );
+        
+                $query->update($this->db->quoteName('sector_economico'))
+                ->set($datos)
+                ->where($condiciones);
+                
+                $this->editarRelacion($data['id'], $data['microservicios']);
+                break;
+            
             default:
                 break;
         }
 
         $this->db->setQuery($query)->execute();
+        $query->clear();
 
+    }
+
+    protected function editarRelacion($sectorId, $microservicios){
+        $query = $this->db->getQuery(true);
+
+        //eliminamos la vieja relacion
+        $query->delete($this->db->quoteName('sector_microservicios'))
+        ->where($this->db->quoteName('sector_id').'='.$sectorId);
+
+        $this->db->setQuery($query);
+        $this->db->execute();
+        $query->clear();
+
+
+        //si se borran todos los microservicios, comprobamos si se va a agregar un microservicio
+        //relacionamos con los microservicios editados
+        $columns = ['sector_id', 'microservicio_id'];
+
+        foreach ($microservicios as $microservicioId) {
+            //otra forma de hacerlo
+            if($microservicioId === '' | $microservicioId === 0){
+                break;
+            }
+
+            $values = array($this->db->quote($sectorId), $this->db->quote($microservicioId));
+
+            $query->insert($this->db->quoteName('sector_microservicios'))
+            ->columns($this->db->quoteName($columns))
+            ->values(implode(',', $values));
+        
+        $this->db->setQuery($query);
+        $this->db->execute();
+        $query->clear();     
+        }
     }
 
     public function getCategoriaServicios(){
@@ -148,6 +239,8 @@ class DataBase
         $this->db->setQuery($query);
 
         $result = $this->db->loadObjectList() ?? [];
+
+        $query->clear();
 
         return $result;
     }
@@ -163,6 +256,8 @@ class DataBase
 
         $result = $this->db->loadObjectList() ?? [];
 
+        $query->clear();
+
         return $result;
     }
 
@@ -177,22 +272,43 @@ class DataBase
 
         $result = $this->db->loadObjectList() ?? [];
 
+        $query->clear();
+
         return $result;
     }
 
     public function getSectorEconomico(){
         $query = $this->db->getQuery();
 
-        $id = $this->session->get('sectorEconomicoId');
-
-        $query->select('*')
-        ->from($this->db->quoteName('sector_economico'))
-        ->where($this->db->quoteName('id').'='.$this->db->quoteName($id));
+        $query->select(array($this->db->quoteName('se.id', 'sector_id'), $this->db->quoteName('se.nombre', 'sector_nombre'), $this->db->quoteName('se.recomendaciones','sector_recomendaciones'), $this->db->quoteName('m.id','microservicios_id'), $this->db->quoteName('m.nombre','microservicios_nombre'), $this->db->quoteName('m.valor_impacto', 'valor_impacto')))
+        ->from($this->db->quoteName('sector_economico', 'se'))
+        ->join('LEFT', $this->db->quoteName('sector_microservicios', 'sm').'ON('.$this->db->quoteName('se.id').'='.$this->db->quoteName('sm.sector_id').')')
+        ->join('LEFT', $this->db->quoteName('microservicios', 'm').'ON('. $this->db->quoteName('m.id').'='.$this->db->quoteName('sm.microservicio_id').')')
+        ->order($this->db->quoteName('m.valor_impacto'));
 
         $this->db->setQuery($query);
 
-        $result = $this->db->loadObject();
-        //loadObjectList
+        $sectores = $this->db->loadObjectList() ?? [];
+
+        $query->clear();
+
+        $result = array();
+
+        foreach ($sectores as $row) {
+            if(!isset($result[$row->sector_id])){
+                $result[$row->sector_id] = [
+                    'id' => $row->sector_id,
+                    'nombre' => $row->sector_nombre,
+                    'recomendaciones' => $row->sector_recomendaciones,
+                    'microservicios' => []
+                ];
+            }
+
+            $result[$row->sector_id]['microservicios'][] = [
+                'id' => $row->microservicios_id,
+                'nombre' => $row->microservicios_nombre
+            ];
+        }
 
         return $result;
 

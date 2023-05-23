@@ -223,5 +223,92 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             alert('error');
         }
+    });
+
+    //sectores agregar
+    const formSectoresAgregar = document.getElementById('agregar_sector_form')
+    formSectoresAgregar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        let microserviciosUser = Array.from(document.querySelectorAll('input[name="microservicios_sector"]:checked')).map((c) => {
+            return c.value;
+       });
+
+       microserviciosUser = microserviciosUser.map(n => parseInt(n));
+
+        const formData = new FormData(e.target);
+        formData.append('accion', 'agregar');
+        formData.append('microservicios_user', microserviciosUser);
+
+        const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+            method: 'POST',
+            body: formData
+        });
+
+        const jsonResponse = await response.json();
+        if(jsonResponse.success){
+            alert('Datos guardados');
+            location.reload();
+        } else {
+            alert('error');
+        }
+
+    });
+
+    //editar sectores
+    //obteniendo datos de botones en un array
+    const editarSectoresBotones = document.querySelectorAll('#datos_editar_sector');
+    editarSectoresBotones.forEach(editarBoton => {
+        editarBoton.addEventListener('click', (e) => {
+            //datos de cada uno de los botones
+            const id = e.target.getAttribute('data-id');
+            const nombre = e.target.getAttribute('data-nombre');
+            const recomendaciones = e.target.getAttribute('data-recomendaciones');
+            const microservicios = e.target.getAttribute('data-microservicios');
+
+            //llenamos el formulario de editar
+            document.getElementById('editar_id_sector').value = id;
+            document.getElementById('editar_nombre_sector').value = nombre;
+            document.getElementById('editar_recomendaciones_sector').value = recomendaciones;
+            checkboxEditar = document.getElementsByName('microservicios_sector_editar');
+            
+            for(let checkbox of checkboxEditar){
+                for(let ms of microservicios){
+                    if(ms === checkbox.value){
+                        checkbox.checked = true;
+                    }
+                }
+            }
+        });
+    });
+
+    const formSectoresEditar = document.getElementById('editar_sector_form')
+    formSectoresEditar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        let microserviciosUserEditar = Array.from(document.querySelectorAll('input[name="microservicios_sector_editar"]:checked')).map((c) => {
+            return c.value;
+        });
+
+        microserviciosUserEditar = microserviciosUserEditar.map(n => parseInt(n));
+
+        const formData = new FormData(e.target);
+        formData.append('accion', 'editar');
+        formData.append('microservicios_sector_editar', microserviciosUserEditar);
+
+        const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+            method:'POST', //utilizado por compatibilidad con FormData
+            body: formData
+        })
+        
+        const jsonResponse = await response.json();
+
+        if(jsonResponse.success){
+            alert('Datos Editados Correctamente');
+            location.reload();
+        } else {
+            console.log(jsonResponse)
+            alert('error');
+        }
     })
 })

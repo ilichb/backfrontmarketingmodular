@@ -61,7 +61,7 @@ use Joomla\CMS\Language\Text;
              }
          } else {
              $document->addStyleSheet('plugins/system/pluginMicroservicios/PlanModular-Front/styles.css');
-             $document->addScript('plugins/system/pluginMicroservicios/PlanModular-Front/src/js/main.js');
+             $document->addScript('plugins/system/pluginMicroservicios/PlanModular-Front/src/bundle.js');
              
              if($context === 'com_content.article'){
                  if(strpos($article->text, '{microserviciosForm}') === false){
@@ -99,6 +99,8 @@ use Joomla\CMS\Language\Text;
         $accion = $input->get('accion', '', 'cmd');
         $method = $input->getMethod();
 
+        $cosas =$input->get('microservicios_user', array(), 'array');
+
         require_once __DIR__.'/database/database.php';
         $dataBase = new DataBase;
 
@@ -129,13 +131,24 @@ use Joomla\CMS\Language\Text;
                         $data = [
                             'nombre' => $input->get('agregar_nombre_microservicio', '', 'string'),
                             'valor_impacto' => $input->get('agregar_valor_impacto_microservicio', 0, 'number'),
-                            'valor_de_costo' => $input->get('agregar_valor_costo_microservicio', 0, 'number'),
+                            'valor_de_costo' => $input->get('agregar_valor_costo_microservicio', 0.0, 'decimal'),
                             'servicio_id' => $input->get('agregar_servicio_microservicio', 0, 'number')
                         ];
 
                         $tabla = 'microservicios';
                         $dataBase->executeGuardar($data, $tabla, $method);
                         break;
+                    
+                    case 'guardar_sector':
+                            $data = [
+                                'nombre' => $input->get('agregar_nombre_sector', '', 'string'),
+                                'recomendaciones' => $input->get('agregar_recomendaciones_sector', '', 'string'),
+                                'microservicio_id' => $input->get('microservicios_user', array(), 'array')
+                            ];
+    
+                            $tabla = 'sector_economico';
+                            $dataBase->executeGuardar($data, $tabla, $method);
+                            break;
 
                     default: 
                         break;
@@ -173,7 +186,7 @@ use Joomla\CMS\Language\Text;
                             'id' => $input->get('editar_id_microservicio', 0, 'number'),
                             'nombre' => $input->get('editar_nombre_microservicio', '', 'string'),
                             'valor_impacto' => $input->get('editar_valor_impacto_microservicio', 0, 'number'),
-                            'valor_de_costo' => $input->get('editar_valor_costo_microservicio', 0, 'number'), 
+                            'valor_de_costo' => $input->get('editar_valor_costo_microservicio', 0.0, 'decimal'), 
                             'servicio_id' => $input->get('editar_servicio_microservicio', 0, 'number')
                         ];
     
@@ -182,6 +195,19 @@ use Joomla\CMS\Language\Text;
                         $dataBase->executeEditar($data, $tabla);
                         break;
 
+                    case 'editar_sector':
+                        $data = [
+                            'id' => $input->get('editar_id_sector', 0, 'number'),
+                            'nombre' => $input->get('editar_nombre_sector', '', 'string'),
+                            'recomendaciones' => $input->get('editar_recomendaciones_sector', '', 'string'),
+                            'microservicios' => $input->get('microservicios_sector_editar', array(), 'array')
+                        ];
+        
+                        $tabla = 'sector_economico';
+
+                        $dataBase->executeEditar($data, $tabla);
+                        break;
+                
                     default:
                         break;
                 }
@@ -218,7 +244,7 @@ use Joomla\CMS\Language\Text;
         }
         }
 
-        $result = array('success' => true, $accion, $data);     
+        $result = array('success' => true);     
         return json_encode($result);
         die();
     }

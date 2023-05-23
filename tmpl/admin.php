@@ -3,11 +3,16 @@ defined('_JEXEC') or die('Acceso restringido');
 
 require_once __DIR__.'/../database/database.php';
 
+use Joomla\CMS\Session\Session;
+
+$token = Session::getFormToken();
+
 $dataBase = new DataBase;
 
 $categoria_servicios = $dataBase->getCategoriaServicios();
 $servicios = $dataBase->getServicios();
 $microservicios = $dataBase->getMicroservicios();
+$sectores = $dataBase->getSectorEconomico();
 
 ?>
 
@@ -17,6 +22,7 @@ $microservicios = $dataBase->getMicroservicios();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="plugins/system/pluginMicroservicios/PlanModular-Front/styles.css" />
     <title>Servicios y Microservicios</title>
 </head>
 <body>
@@ -118,7 +124,8 @@ $microservicios = $dataBase->getMicroservicios();
                          echo $categories->id; ?>"><?php echo $categories->nombre; ?></option>
                          <?php endforeach ?>
                     </select>
-
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit">Agregar</button>
                 </form>
             </div>
@@ -138,6 +145,8 @@ $microservicios = $dataBase->getMicroservicios();
                          echo $categories->id; ?>"><?php echo $categories->nombre; ?></option>
                          <?php endforeach ?>
                     </select>
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit">Actualizar</button>
                 </form>
             </div>
@@ -185,7 +194,7 @@ $microservicios = $dataBase->getMicroservicios();
                     <label for="agregar_valor_impacto_microservicio">Valor de Impacto: </label>    
                     <input type="number" name="agregar_valor_impacto_microservicio" id="agregar_valor_impacto_microservicio" />
                     <label for="agregar_valor_costo_microservicio">Valor de costo: </label>    
-                    <input type="number" name="agregar_valor_costo_microservicio" id="agregar_valor_costo_microservicio"/>
+                    <input type="number" name="agregar_valor_costo_microservicio" id="agregar_valor_costo_microservicio" step="0.01"/>
                     <label for="agregar_servicio_microservicio" >Servicios: </label>
                     <select name="agregar_servicio_microservicio" id="agregar_servicio_microservicio">
                         <option value=""> -- </option>
@@ -194,7 +203,8 @@ $microservicios = $dataBase->getMicroservicios();
                          echo $serv->id; ?>"><?php echo $serv->nombre; ?></option>
                          <?php endforeach ?>
                     </select>
-
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit">Agregar</button>
                 </form>
             </div>
@@ -209,7 +219,7 @@ $microservicios = $dataBase->getMicroservicios();
                     <label for="editar_valor_impacto_microservicio">Valor de Impacto: </label>    
                     <input type="number" name="editar_valor_impacto_microservicio" id="editar_valor_impacto_microservicio" />
                     <label for="editar_valor_costo_microservicio">Valor de costo: </label>    
-                    <input type="number" name="editar_valor_costo_microservicio" id="editar_valor_costo_microservicio"/>
+                    <input type="number" name="editar_valor_costo_microservicio" id="editar_valor_costo_microservicio" step="0.01"/>
                     <label for="editar_servicio_microservicio" >Servicios: </label>
                     <select name="editar_servicio_microservicio" id="editar_servicio_microservicio">
                         <option value=""> -- </option>
@@ -218,13 +228,90 @@ $microservicios = $dataBase->getMicroservicios();
                          echo $serv->id; ?>"><?php echo $serv->nombre; ?></option>
                          <?php endforeach ?>
                     </select>
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit">Actualizar</button>
                 </form>
             </div>
         </section>
         <section id="sector" style="display: none;" >
-            <div>
-                <h3>Sectores Economicos</h3>
+            <div id="mostrar_sector">
+                <h3>Sectores Economicos: </h3>
+                <div id="sector_tabla">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Recomendaciones</th>
+                                <th>Microservicios</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $contador = 1; ?>
+                            <?php foreach ($sectores as $sector_id => $sector_data): ?>
+                            <tr>
+                                <td scope='row' > <?php echo $contador++;?></td>
+                                <td><?php echo $sector_data['nombre']; ?></td>
+                                <td><?php  echo $sector_data['recomendaciones']; ?></td>
+                                <td><?php foreach ($sector_data['microservicios'] as $microservicio): ?>
+                                    <ul>
+                                        <li><?php echo $microservicio['nombre'] ?></li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <button type="button" id="datos_editar_sector" data-id='<?php echo $sector_data['id']; ?>' data-nombre='<?php echo $sector_data['nombre']; ?>' data-recomendaciones='<?php echo $sector_data['recomendaciones']; ?>' data-microservicios='[<?php echo $microservicio['id']; ?>]'>Edit</button>
+                                </td>
+                                <?php endforeach; ?>
+                            </tr>      
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="agregar_sector">
+                <h4>Agregar Sector Economico</h4>
+                <form id="agregar_sector_form" >
+                    <input type="hidden" name="tipo" value="guardar_sector" id='tipo_sector'>
+                    <label for="agregar_nombre_sector">Nombre: </label>    
+                    <input type="text" name="agregar_nombre_sector" id="agregar_nombre_sector" />
+                    <label for="agregar_recomendaciones_sector">Recomendaciones: </label>      
+                    <input type="text" name="agregar_recomendaciones_sector" id="agregar_recomendaciones_sector"/>
+                    <label for="agregar_microservicio_sector" >Microservicios: </label>
+                    <?php foreach ($microservicios as $ms): ?>
+                        <div>
+                            <label for="microservios-<?php echo $ms->id; ?>"><?php echo $ms->nombre; ?></label>
+                            <input type="checkbox" name="microservicios_sector" id="microservios-<?php echo $ms->id?>" value="<?php echo $ms->id ?>">
+                        </div>
+                        <?php endforeach ?>
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
+                    <button type="submit">Agregar</button>
+                </form>
+            </div>
+
+            <div id="editar_sector">
+                <h4>Editar Sector Economico: </h4>
+                <form id="editar_sector_form" >
+                    <input type="hidden" name="editar_id_sector" id="editar_id_sector" />
+                    <input type="hidden" name="caso" value="editar_sector" />
+                    <label for="editar_nombre_sector">Nombre: </label>    
+                    <input type="text" name="editar_nombre_sector" id="editar_nombre_sector" />
+                    <label for="editar_recomendaciones_sector">Recomendaciones: </label>      
+                    <input type="text" name="editar_recomendaciones_sector" id="editar_recomendaciones_sector"/>
+                    <label for="editar_microservicio_sector" >Microservicios: </label>
+                    <?php foreach ($microservicios as $ms): ?>
+                        <div>
+                            <label for="microservios-<?php echo $ms->id; ?>-editar"><?php echo $ms->nombre; ?></label>
+                            <input type="checkbox" name="microservicios_sector_editar" id="microservicios-<?php echo $ms->id; ?>-editar" value="<?php echo $ms->id; ?>">
+                        </div>
+                    <?php endforeach ?>
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
+                    <button type="submit">Actualizar</button>
+                </form>
             </div>
         </section>
 

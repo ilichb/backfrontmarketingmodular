@@ -10,6 +10,7 @@
     <files>
         <filename plugin="pluginMicroservicios">pluginMicroservicios.php</filename>
 		<filename>index.html</filename>
+        <filename>LICENSE</filename>
         <folder>algoritmo</folder>
         <folder>css</folder>
         <folder>database</folder>
