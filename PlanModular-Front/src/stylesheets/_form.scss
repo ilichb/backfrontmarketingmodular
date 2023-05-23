@@ -1,6 +1,6 @@
 @use 'base';
 
-.form {
+#form {
   margin: 1rem 1rem;
 }
 
@@ -56,7 +56,7 @@
   text-align: center;
 }
 
-#sector-container, #country-container, #service-value-container, #services-container {
+#sector-container, #country-container, #service-value-container, #services-container, .sub-service-content {
   margin: 2rem;
 }
 
@@ -66,7 +66,7 @@
 }
 
 @media (min-width: 768px) {
-  .detailed-sector-button {
+  .detailed-sector-button, .sub-service-container  {
     margin: 0.5rem;
     font-size: large;
   }
@@ -77,7 +77,7 @@
 }
 
 @media (min-width: 1280px) {
-  .form {
+  .f-visible {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -86,9 +86,10 @@
   .buttons-container {
     display: flex;
     flex-direction: row;
+
+    button {
+      margin: 0 1rem
+    }
   }
 
-  #sector, #country, #service-value {
-    margin: 0 1rem
-  }
 }

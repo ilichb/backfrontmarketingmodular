@@ -29,13 +29,33 @@ let selectedCommercialSector = null;
 let selectedCountry = null;
 let expenses = null;
 let roi = null;
-let selectedMicroServices = [];
+let selectedMicroServices = {};
+let name = null;
+let email = null;
+let phone = null;
+let company = null;
+
+let brandingPercentage = document.getElementById('pie-percentage');
+let organicGrowthPercentage = document.getElementById('organic-growth-pie');
+let totalGrowthPercentage = document.getElementById('total-growth-pie');
+let seoPercentage = document.getElementById('seo-pie');
+let salesPercentage = document.getElementById('sales-percentage');
+let projectedEarningsMoney = document.getElementById('projected-earnings-money');
+
+
+let dashboard = document.getElementById('dashboard');
+let form = document.getElementById('form');
+let signupForm = document.getElementById('sign-up-container');
 
 let testSector = document.getElementById('test-sector');
 let testCountry = document.getElementById('test-country');
 let testExpenses = document.getElementById('test-expenses');
 let testRoi = document.getElementById('test-roi');
+
 let errorMessage = document.getElementById('error-message');
+let errorMessageSignup = document.getElementById('error-message-signup');
+
+let thankYouMessage = document.getElementById('thank-you');
 
 let sectorButton = document.getElementById('sector');
 let sectorContainer = document.getElementById('sector-container');
@@ -52,8 +72,15 @@ let serviceContainer = document.getElementById('services-container');
 let expensesInput = document.getElementById('expenses-input');
 let roiInput = document.getElementById('roi-input');
 
-let submitButton = document.getElementById('submit-button');
+let emailInput = document.getElementById('email-input');
+let nameInput = document.getElementById('name-input');
+let phoneInput = document.getElementById('phone-input');
+let companyInput = document.getElementById('company-input');
 
+let submitButton = document.getElementById('submit-button');
+let signupButton = document.getElementById('submit-signup-button');
+
+let resetButton = document.getElementById('reset-form');
 function toggleActiveClass(element, className) {
     let buttonsContainer = document.getElementsByClassName(className);
     for (let i = 0; i < buttonsContainer.length; i++) {
@@ -103,15 +130,15 @@ function generateOptions(data, context, target){
                 selectedCountry === button.id ? selectedCountry = null : selectedCountry = button.id;
             }
             if(context==='sector'){
-                selectedCommercialSector === button.id ? selectedCommercialSector = null : selectedCountry = button.id;
+                selectedCommercialSector === button.id ? selectedCommercialSector = null : selectedCommercialSector = button.id;
             }
-            if(context==='service'){
-                if(selectedMicroServices.includes(buttonId)) {
-                    selectedMicroServices = selectedMicroServices.filter(microService => microService !== buttonId)
-                } else {
-                    selectedMicroServices.push(buttonId)
-                }
-            }
+            // if(context==='service'){
+            //     if(selectedMicroServices.includes(buttonId)) {
+            //         selectedMicroServices = selectedMicroServices.filter(microService => microService !== buttonId)
+            //     } else {
+            //         selectedMicroServices.push(buttonId)
+            //     }
+            // }
             toggleActiveClass(button, `detailed-${context}-button`);
         });
         target.appendChild(button);
@@ -136,10 +163,15 @@ function generateServices(data, context, target){
             button.id = microServiceId;
             button.innerHTML = microServiceName;
             button.addEventListener('click', function (){
-                if(selectedMicroServices.includes(microServiceId)) {
-                    selectedMicroServices = selectedMicroServices.filter(microService => microService !== microServiceId)
+                if(selectedMicroServices[serviceId] && selectedMicroServices[serviceId].includes(microServiceId)) {
+                    selectedMicroServices[serviceId] = selectedMicroServices[serviceId].filter(microService => microService !== microServiceId)
                 } else {
-                    selectedMicroServices.push(microServiceId)
+                    if(!selectedMicroServices[serviceId]) {
+                        selectedMicroServices[serviceId] = [microServiceId]
+                    }
+                    else {
+                        selectedMicroServices[serviceId].push(microServiceId)
+                    }
                 }
                 let buttonsContainer = document.getElementsByClassName(`detailed-${serviceId}-button`);
                 for(let k = 0; k < buttonsContainer.length; k++){
@@ -153,8 +185,6 @@ function generateServices(data, context, target){
         specificServiceButton.addEventListener('click', function () {
             toggleActiveClass(specificServiceButton, 'sub-service-container');
             toggleVisibleClass(specificServiceContainer, `sub-service-content`);
-            // let containers = document.getElementsByClassName(`sub-service-content`);
-            // console.log(containers)
         });
         target.appendChild(specificServiceButton);
         target.appendChild(specificServiceContainer);
@@ -174,6 +204,101 @@ function addListenersToInputs(input, finalVariable) {
     });
 }
 
+resetButton.addEventListener('click', function () {
+    let visibleElements = document.getElementsByClassName('content');
+    let activeElements = document.getElementsByClassName('active');
+
+    let visibleSubServices = document.getElementsByClassName('sub-service-content');
+    let activeServices = document.getElementsByClassName('sub-service-container');
+
+    for(let i = 0; i < visibleElements.length; i++) {
+        // console.log(visibleElements[i])
+        if(visibleElements[i].classList.contains('hidden') === false) {
+            visibleElements[i].classList.add('hidden')
+            visibleElements[i].classList.remove('visible');
+        }
+    }
+
+    for(let i = 0; i < visibleSubServices.length; i++) {
+        if(visibleSubServices[i].classList.contains('hidden') === false) {
+            visibleSubServices[i].classList.add('hidden')
+            visibleSubServices[i].classList.remove('visible');
+        }
+        let buttons = visibleSubServices[i].getElementsByTagName('button')
+        for(let j = 0; j < buttons.length; j++){
+            buttons[j].classList.remove('active');
+        }
+    }
+
+    for (let i = 0; i < activeElements.length; i++) {
+        // console.log(activeElements[i])
+        activeElements[i].classList.remove('active');
+    }
+
+    for (let i = 0; i < activeServices.length; i++) {
+        // console.log(activeServices[i])
+        activeServices[i].classList.remove('active');
+    }
+
+    expensesInput.value = null;
+    roiInput.value = null;
+    nameInput.value = null;
+    emailInput.value = null;
+    selectedCountry = null;
+    selectedCommercialSector = null;
+    selectedMicroServices = {};
+    roi = null;
+    expenses = null;
+    name = null;
+    email = null;
+
+    dashboard.classList.add('d-hidden');
+    form.classList.add('f-visible');
+    dashboard.classList.remove('d-visible');
+    form.classList.remove('f-hidden');
+
+    signupForm.classList.add('su-hidden');
+    signupForm.classList.remove('su-visible');
+    thankYouMessage.classList.add('t-hidden');
+    thankYouMessage.classList.remove('t-visible')
+})
+
+signupButton.addEventListener('click', function (){
+    name = nameInput.value;
+    email = emailInput.value;
+    phone = phoneInput.value;
+    company = companyInput.value;
+
+    if(name === null || name === '' || email === null || email === '') {
+        errorMessageSignup.innerHTML = 'Missing fields';
+    } else {
+        fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+            method: 'POST',
+            body: {
+                name,
+                email,
+                phone,
+                company,
+            },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+            .then(response => {
+                errorMessageSignup.innerHTML = '';
+                signupForm.classList.add('su-hidden');
+                signupForm.classList.remove('su-visible');
+                thankYouMessage.classList.add('t-visible');
+                thankYouMessage.classList.remove('t-hidden')
+            })
+            .catch(err => {
+                console.log(err)
+                alert(err.message);
+            })
+
+    }
+
+})
 submitButton.addEventListener('click', function () {
     let actives = document.getElementsByClassName('active');
     for (let i = 0; i < actives.length; i++) {
@@ -187,19 +312,55 @@ submitButton.addEventListener('click', function () {
 
     expenses = expensesInput.value;
     roi = roiInput.value;
-    if(selectedCommercialSector === null || selectedCountry === null || expenses === null || roi === null){
+    if(selectedCommercialSector === null || selectedCountry === null || expenses === null || expenses === '' || roi === null || roi === '' || Object.keys(selectedMicroServices).length === 0) {
         errorMessage.innerHTML = 'Missing fields';
-        testSector.innerHTML = '';
-        testCountry.innerHTML = '';
-        testExpenses.innerHTML = '';
-        testRoi.innerHTML = '';
     } else {
-        console.log(selectedMicroServices)
-        testSector.innerHTML = selectedCommercialSector;
-        testCountry.innerHTML = selectedCountry;
-        testExpenses.innerHTML = expenses;
-        testRoi.innerHTML = roi;
-        errorMessage.innerHTML = '';
+        fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+            method: 'POST',
+            body: {
+                selectedCommercialSector,
+                selectedCountry,
+                expenses,
+                roi,
+                selectedMicroServices,
+            },
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                branding = data.branding;
+                brandingPercentage.innerHTML = `${data.branding}%`;
+                organicGrowth = data.organicGrowth;
+                organicGrowthPercentage.innerHTML = `${data.organicGrowth}%`;
+                totalGrowth = data.totalGrowth;
+                totalGrowthPercentage.innerHTML = `${data.totalGrowth}%`;
+                seoLevel = data.seoLevel;
+                seoPercentage.innerHTML = `${data.seoLevel}%`;
+                countriesList = data.countriesList;
+                sales = data.sales;
+                salesPercentage.innerHTML = `${data.sales}%`;
+                projectedEarnings = data.projectedEarnings;
+                projectedEarningsMoney.innerHTML = `${data.projectedEarnings}%`;
+
+                errorMessage.innerHTML = '';
+                dashboard.classList.add('d-visible');
+                dashboard.classList.remove('d-hidden');
+                form.classList.add('f-hidden')
+                form.classList.remove('f-visible');
+                signupForm.classList.add('su-visible')
+                signupForm.classList.remove('su-hidden')
+            })
+            .catch(err => {
+                console.log(err)
+                alert(err.message);
+
+            })
+        // testSector.innerHTML = selectedCommercialSector;
+        // testCountry.innerHTML = selectedCountry;
+        // testExpenses.innerHTML = expenses;
+        // testRoi.innerHTML = roi;
     }
 });
 

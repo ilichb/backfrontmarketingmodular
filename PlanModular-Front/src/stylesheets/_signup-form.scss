@@ -1,0 +1,42 @@
+@use "base";
+
+#signup-form {
+  margin: 1rem 2rem;
+}
+
+.su-hidden {
+  display: none;
+}
+
+//.su-visible {
+//  display: block;
+//}
+
+.su-visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 2rem;
+}
+
+#submit-signup-button {
+  margin-top: 2rem;
+}
+
+.t-hidden {
+  display: none;
+}
+
+.t-visible {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  p {
+    margin-bottom: 0;
+    font-family: base.$font-stack;
+    font-weight: bold;
+    font-size: large;
+    text-align: center;
+  }
+}
