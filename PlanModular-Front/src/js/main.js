@@ -29,7 +29,7 @@ let selectedCommercialSector = null;
 let selectedCountry = null;
 let expenses = null;
 let roi = null;
-let selectedMicroServices = [];
+let selectedMicroServices = {};
 let name = null;
 let email = null;
 let phone = null;
@@ -132,13 +132,13 @@ function generateOptions(data, context, target){
             if(context==='sector'){
                 selectedCommercialSector === button.id ? selectedCommercialSector = null : selectedCommercialSector = button.id;
             }
-            if(context==='service'){
-                if(selectedMicroServices.includes(buttonId)) {
-                    selectedMicroServices = selectedMicroServices.filter(microService => microService !== buttonId)
-                } else {
-                    selectedMicroServices.push(buttonId)
-                }
-            }
+            // if(context==='service'){
+            //     if(selectedMicroServices.includes(buttonId)) {
+            //         selectedMicroServices = selectedMicroServices.filter(microService => microService !== buttonId)
+            //     } else {
+            //         selectedMicroServices.push(buttonId)
+            //     }
+            // }
             toggleActiveClass(button, `detailed-${context}-button`);
         });
         target.appendChild(button);
@@ -163,10 +163,15 @@ function generateServices(data, context, target){
             button.id = microServiceId;
             button.innerHTML = microServiceName;
             button.addEventListener('click', function (){
-                if(selectedMicroServices.includes(microServiceId)) {
-                    selectedMicroServices = selectedMicroServices.filter(microService => microService !== microServiceId)
+                if(selectedMicroServices[serviceId] && selectedMicroServices[serviceId].includes(microServiceId)) {
+                    selectedMicroServices[serviceId] = selectedMicroServices[serviceId].filter(microService => microService !== microServiceId)
                 } else {
-                    selectedMicroServices.push(microServiceId)
+                    if(!selectedMicroServices[serviceId]) {
+                        selectedMicroServices[serviceId] = [microServiceId]
+                    }
+                    else {
+                        selectedMicroServices[serviceId].push(microServiceId)
+                    }
                 }
                 let buttonsContainer = document.getElementsByClassName(`detailed-${serviceId}-button`);
                 for(let k = 0; k < buttonsContainer.length; k++){
@@ -180,8 +185,6 @@ function generateServices(data, context, target){
         specificServiceButton.addEventListener('click', function () {
             toggleActiveClass(specificServiceButton, 'sub-service-container');
             toggleVisibleClass(specificServiceContainer, `sub-service-content`);
-            // let containers = document.getElementsByClassName(`sub-service-content`);
-            // console.log(containers)
         });
         target.appendChild(specificServiceButton);
         target.appendChild(specificServiceContainer);
@@ -207,13 +210,6 @@ resetButton.addEventListener('click', function () {
 
     let visibleSubServices = document.getElementsByClassName('sub-service-content');
     let activeServices = document.getElementsByClassName('sub-service-container');
-
-    // let activeMicroservices = visibleSubServices.getElementsByTagName('button')
-    // console.log(visibleElements)
-    // console.log(activeElements);
-    // console.log(visibleSubServices);
-    // console.log(activeServices);
-    // console.log(activeMicroservices);
 
     for(let i = 0; i < visibleElements.length; i++) {
         // console.log(visibleElements[i])
@@ -250,7 +246,7 @@ resetButton.addEventListener('click', function () {
     emailInput.value = null;
     selectedCountry = null;
     selectedCommercialSector = null;
-    selectedMicroServices = [];
+    selectedMicroServices = {};
     roi = null;
     expenses = null;
     name = null;
@@ -316,12 +312,8 @@ submitButton.addEventListener('click', function () {
 
     expenses = expensesInput.value;
     roi = roiInput.value;
-    if(selectedCommercialSector === null || selectedCountry === null || expenses === null || expenses === '' || roi === null || roi === '' || selectedMicroServices.length === 0){
+    if(selectedCommercialSector === null || selectedCountry === null || expenses === null || expenses === '' || roi === null || roi === '' || Object.keys(selectedMicroServices).length === 0) {
         errorMessage.innerHTML = 'Missing fields';
-        testSector.innerHTML = '';
-        testCountry.innerHTML = '';
-        testExpenses.innerHTML = '';
-        testRoi.innerHTML = '';
     } else {
         fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
             method: 'POST',
