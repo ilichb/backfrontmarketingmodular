@@ -192,6 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const nombre = e.target.getAttribute('data-nombre');
             const valorImpacto = e.target.getAttribute('data-valor-impacto');
             const valorCosto = e.target.getAttribute('data-valor-costo');
+            const valorIngreso = e.target.getAttribute('data-valor-ingreso');
+            const gastoPublicidad = e.target.getAttribute('data-gasto-publicidad');
             const servicio = e.target.getAttribute('data-servicio');
 
             //llenamos el formulario de editar
@@ -199,6 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('editar_nombre_microservicio').value = nombre;
             document.getElementById('editar_valor_impacto_microservicio').value = valorImpacto;
             document.getElementById('editar_valor_costo_microservicio').value = valorCosto;
+            document.getElementById('editar_valor_ingreso_microservicio').value = valorIngreso;
+            document.getElementById('editar_gasto_publicidad_microservicio').value = gastoPublicidad;
             document.getElementById('editar_servicio_microservicio').value = servicio;
         });
     });
@@ -251,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         } else {
             alert('error');
+            location.reload();
         }
 
     });
@@ -271,10 +276,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('editar_nombre_sector').value = nombre;
             document.getElementById('editar_recomendaciones_sector').value = recomendaciones;
             checkboxEditar = document.getElementsByName('microservicios_sector_editar');
-            
+
+            let microserviciosId = microservicios.split(',').map((id) => parseInt(id));
+            microserviciosId.pop();
+            console.log(microserviciosId);
+
             for(let checkbox of checkboxEditar){
-                for(let ms of microservicios){
-                    if(ms === checkbox.value){
+                for(let ms of microserviciosId){
+                    if(ms === parseInt(checkbox.value)){
                         checkbox.checked = true;
                     }
                 }

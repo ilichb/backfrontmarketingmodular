@@ -132,6 +132,8 @@ use Joomla\CMS\Language\Text;
                             'nombre' => $input->get('agregar_nombre_microservicio', '', 'string'),
                             'valor_impacto' => $input->get('agregar_valor_impacto_microservicio', 0, 'number'),
                             'valor_de_costo' => $input->get('agregar_valor_costo_microservicio', 0.0, 'decimal'),
+                            'valor_de_ingreso' => $input->get('agregar_valor_ingreso_microservicio', 0.0, 'decimal'),
+                            'gasto_publicidad' => $input->get('agregar_gasto_publicidad_microservicio', 0.0, 'decimal'),
                             'servicio_id' => $input->get('agregar_servicio_microservicio', 0, 'number')
                         ];
 
@@ -186,7 +188,9 @@ use Joomla\CMS\Language\Text;
                             'id' => $input->get('editar_id_microservicio', 0, 'number'),
                             'nombre' => $input->get('editar_nombre_microservicio', '', 'string'),
                             'valor_impacto' => $input->get('editar_valor_impacto_microservicio', 0, 'number'),
-                            'valor_de_costo' => $input->get('editar_valor_costo_microservicio', 0.0, 'decimal'), 
+                            'valor_de_costo' => $input->get('editar_valor_costo_microservicio', 0.0, 'decimal'),
+                            'valor_de_ingreso' => $input->get('editar_valor_ingreso_microservicio', 0.0, 'decimal'),
+                            'gasto_publicidad' => $input->get('editar_gasto_publicidad_microservicio', 0.0, 'decimal'), 
                             'servicio_id' => $input->get('editar_servicio_microservicio', 0, 'number')
                         ];
     

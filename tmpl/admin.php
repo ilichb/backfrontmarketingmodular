@@ -162,6 +162,8 @@ $sectores = $dataBase->getSectorEconomico();
                                 <th>Nombre</th>
                                 <th>Valor de Impacto</th>
                                 <th>Valor de Costo</th>
+                                <th>Valor de Ingreso</th>
+                                <th>Gasto de Publicidad</th>
                                 <th>Servicio</th>
                                 <th>Acciones</th>
                             </tr>
@@ -174,11 +176,12 @@ $sectores = $dataBase->getSectorEconomico();
                                 <td><?php echo $micro->nombre; ?></td>
                                 <td><?php echo $micro->valor_impacto; ?> %</td>
                                 <td><?php echo $micro->valor_de_costo; ?> EUR</td>
+                                <td><?php echo $micro->valor_de_ingreso; ?> EUR</td>
+                                <td><?php echo $micro->gasto_publicidad; ?> EUR</td>
                                 <td><?php echo $micro->servicio; ?></td>
                                 <td>
-                                    <button type="button" id="datos_editar_microservicios" data-id='<?php echo $micro->id; ?>' data-nombre='<?php echo $micro->nombre; ?>' data-valor-impacto='<?php echo $micro->valor_impacto; ?>' data-valor-costo='<?php echo $micro->valor_de_costo; ?>' data-servicio='<?php echo $micro->servicio_id; ?>'>Edit</button>
+                                    <button type="button" id="datos_editar_microservicios" data-id='<?php echo $micro->id; ?>' data-nombre='<?php echo $micro->nombre; ?>' data-valor-impacto='<?php echo $micro->valor_impacto; ?>' data-valor-costo='<?php echo $micro->valor_de_costo; ?>' data-valor-ingreso='<?php echo $micro->valor_de_ingreso; ?>' data-gasto-publicidad='<?php echo $micro->gasto_publicidad; ?>' data-servicio='<?php echo $micro->servicio_id; ?>'>Edit</button>
                                 </td>	
-
                             </tr>      
                             <?php endforeach; ?>
                         </tbody>
@@ -196,6 +199,10 @@ $sectores = $dataBase->getSectorEconomico();
                     <input type="number" name="agregar_valor_impacto_microservicio" id="agregar_valor_impacto_microservicio" />
                     <label for="agregar_valor_costo_microservicio">Valor de costo: </label>    
                     <input type="number" name="agregar_valor_costo_microservicio" id="agregar_valor_costo_microservicio" step="0.01"/>
+                    <label for="agregar_valor_ingreso_microservicio">Valor de Ingresos: </label>    
+                    <input type="number" name="agregar_valor_ingreso_microservicio" id="agregar_valor_ingreso_microservicio" step="0.01"/>
+                    <label for="agregar_gasto_publicidad_microservicio">Gasto de publicidad: </label>    
+                    <input type="number" name="agregar_gasto_publicidad_microservicio" id="agregar_gasto_publicidad_microservicio" step="0.01"/>
                     <label for="agregar_servicio_microservicio" >Servicios: </label>
                     <select name="agregar_servicio_microservicio" id="agregar_servicio_microservicio">
                         <option value=""> -- </option>
@@ -221,6 +228,10 @@ $sectores = $dataBase->getSectorEconomico();
                     <input type="number" name="editar_valor_impacto_microservicio" id="editar_valor_impacto_microservicio" />
                     <label for="editar_valor_costo_microservicio">Valor de costo: </label>    
                     <input type="number" name="editar_valor_costo_microservicio" id="editar_valor_costo_microservicio" step="0.01"/>
+                    <label for="editar_valor_ingreso_microservicio">Valor de Ingresos: </label>    
+                    <input type="number" name="editar_valor_ingreso_microservicio" id="editar_valor_ingreso_microservicio" step="0.01"/>
+                    <label for="editar_gasto_publicidad_microservicio">Gasto de Publicidad: </label>    
+                    <input type="number" name="editar_gasto_publicidad_microservicio" id="editar_gasto_publicidad_microservicio" step="0.01"/>
                     <label for="editar_servicio_microservicio" >Servicios: </label>
                     <select name="editar_servicio_microservicio" id="editar_servicio_microservicio">
                         <option value=""> -- </option>
@@ -250,23 +261,25 @@ $sectores = $dataBase->getSectorEconomico();
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $contador = 1; ?>
+                            <?php $contador = 1; $microservicioId = array(); ?>
                             <?php foreach ($sectores as $sector_id => $sector_data): ?>
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $sector_data['nombre']; ?></td>
                                 <td><?php  echo $sector_data['recomendaciones']; ?></td>
-                                <td><?php foreach ($sector_data['microservicios'] as $microservicio): ?>
+                                <td>
                                     <ul>
-                                        <li><?php echo $microservicio['nombre'] ?></li>
-                                    </ul>
+                                    <?php foreach ($sector_data['microservicios'] as $microservicio): ?>
+                                    <?php $microservicioId[] = $microservicio['id']; ?>
+                                        <li><?php echo $microservicio['nombre']  ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>   
                                 </td>
                                 <td>
-                                    <button type="button" id="datos_editar_sector" data-id='<?php echo $sector_data['id']; ?>' data-nombre='<?php echo $sector_data['nombre']; ?>' data-recomendaciones='<?php echo $sector_data['recomendaciones']; ?>' data-microservicios='[<?php echo $microservicio['id']; ?>]'>Edit</button>
+                                    <button type="button" id="datos_editar_sector" data-id='<?php echo $sector_data['id']; ?>' data-nombre='<?php echo $sector_data['nombre']; ?>' data-recomendaciones='<?php echo $sector_data['recomendaciones']; ?>' data-microservicios='<?php  foreach ($sector_data['microservicios'] as $micro): echo $micro['id'];?>,<?php endforeach; ?>'>Edit</button>
+                                    <?php endforeach; ?>
                                 </td>
-                                <?php endforeach; ?>
                             </tr>      
-                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -279,7 +292,7 @@ $sectores = $dataBase->getSectorEconomico();
                     <label for="agregar_nombre_sector">Nombre: </label>    
                     <input type="text" name="agregar_nombre_sector" id="agregar_nombre_sector" />
                     <label for="agregar_recomendaciones_sector">Recomendaciones: </label>      
-                    <input type="text" name="agregar_recomendaciones_sector" id="agregar_recomendaciones_sector"/>
+                    <textarea name="agregar_recomendaciones_sector" id="agregar_recomendaciones_sector" rows="5" cols="60"></textarea>
                     <label for="agregar_microservicio_sector" >Microservicios: </label>
                     <?php foreach ($microservicios as $ms): ?>
                         <div>
@@ -301,7 +314,7 @@ $sectores = $dataBase->getSectorEconomico();
                     <label for="editar_nombre_sector">Nombre: </label>    
                     <input type="text" name="editar_nombre_sector" id="editar_nombre_sector" />
                     <label for="editar_recomendaciones_sector">Recomendaciones: </label>      
-                    <input type="text" name="editar_recomendaciones_sector" id="editar_recomendaciones_sector"/>
+                    <textarea name="editar_recomendaciones_sector" id="editar_recomendaciones_sector" rows="5" cols="60"></textarea>
                     <label for="editar_microservicio_sector" >Microservicios: </label>
                     <?php foreach ($microservicios as $ms): ?>
                         <div>

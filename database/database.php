@@ -58,11 +58,11 @@ class DataBase
                 break;    
             
             case 'microservicios':
-                $columns = ['nombre', 'valor_impacto', 'valor_de_costo','servicio_id'];
+                $columns = ['nombre', 'valor_impacto', 'valor_de_costo', 'valor_de_ingreso', 'gasto_publicidad', 'servicio_id'];
 
                 $values = [$this->db->quote($data['nombre']),
                 $this->db->quote($data['valor_impacto']),
-                $this->db->quote($data['valor_de_costo']),
+                $this->db->quote($data['valor_de_costo']), $this->db->quote($data['valor_de_ingreso']), $this->db->quote($data['gasto_publicidad']),
                 $this->db->quote($data['servicio_id'])];
 
                 $query->insert($this->db->quoteName('microservicios'))
@@ -97,23 +97,24 @@ class DataBase
 
     protected function guardarRelacion($sectorId, $microservicios){
 
-        $query = $this->db->getQuery(true);
-
         //relacionamos con los microservicios
          $columns = ['sector_id', 'microservicio_id'];
 
-         foreach ($microservicios as $microservicioId) {
-             //otra forma de hacerlo
-             $values = array($this->db->quote($sectorId), $this->db->quote($microservicioId));
+         $microserviciosRecorrer = explode(',', $microservicios[0]);
+
+         foreach ($microserviciosRecorrer as $microservicio => $Id) {
+
+             $query = $this->db->getQuery(true);
+             $values = array($this->db->quote($sectorId), $this->db->quote($Id));
 
              $query->insert($this->db->quoteName('sector_microservicios'))
              ->columns($this->db->quoteName($columns))
              ->values(implode(',', $values));
 
-             $this->db->setQuery($query);
-             $this->db->execute();
-             $query->clear();
+            $this->db->setQuery($query);
+            $this->db->execute();
          }
+        $query->clear();
     }
 
     protected function editar($data, $tablaDb){
@@ -157,6 +158,8 @@ class DataBase
                     $this->db->quoteName('nombre').'='.$this->db->quote($data['nombre']),
                     $this->db->quoteName('valor_impacto').'='.$this->db->quote($data['valor_impacto']),
                     $this->db->quoteName('valor_de_costo').'='.$this->db->quote($data['valor_de_costo']),
+                    $this->db->quoteName('valor_de_ingreso').'='.$this->db->quote($data['valor_de_ingreso']),
+                    $this->db->quoteName('gasto_publicidad').'='.$this->db->quote($data['gasto_publicidad']),
                     $this->db->quoteName('servicio_id').'='.$this->db->quote($data['servicio_id'])
                 );
     
@@ -212,13 +215,15 @@ class DataBase
         //relacionamos con los microservicios editados
         $columns = ['sector_id', 'microservicio_id'];
 
-        foreach ($microservicios as $microservicioId) {
+        $microserviciosRecorrer = explode(',', $microservicios[0]);
+
+        foreach ($microserviciosRecorrer as $microservicio => $Id) {
             //otra forma de hacerlo
-            if($microservicioId === '' | $microservicioId === 0){
+            if($Id === '' | $Id === 0){
                 break;
             }
 
-            $values = array($this->db->quote($sectorId), $this->db->quote($microservicioId));
+            $values = array($this->db->quote($sectorId), $this->db->quote($Id));
 
             $query->insert($this->db->quoteName('sector_microservicios'))
             ->columns($this->db->quoteName($columns))
@@ -264,7 +269,7 @@ class DataBase
     public function getMicroservicios(){
         $query = $this->db->getQuery(true);
 
-        $query->select(array($this->db->quoteName('m.id'), $this->db->quoteName('m.nombre'), $this->db->quoteName('m.valor_impacto'), $this->db->quoteName('m.valor_de_costo'), $this->db->quoteName('s.nombre', 'servicio'), $this->db->quoteName('m.servicio_id')))
+        $query->select(array($this->db->quoteName('m.id'), $this->db->quoteName('m.nombre'), $this->db->quoteName('m.valor_impacto'), $this->db->quoteName('m.valor_de_costo'), $this->db->quoteName('m.valor_de_ingreso'), $this->db->quoteName('m.gasto_publicidad'),$this->db->quoteName('s.nombre', 'servicio'), $this->db->quoteName('m.servicio_id')))
         ->from($this->db->quoteName('microservicios', 'm'))
         ->join('LEFT', $this->db->quoteName('servicios', 's').'ON('.$this->db->quoteName('m.servicio_id').'='.$this->db->quoteName('s.id').')');
         
