@@ -13,7 +13,6 @@ $categoria_servicios = $dataBase->getCategoriaServicios();
 $servicios = $dataBase->getServicios();
 $microservicios = $dataBase->getMicroservicios();
 $sectores = $dataBase->getSectorEconomico();
-
 ?>
 
 <!DOCTYPE html>
@@ -23,15 +22,16 @@ $sectores = $dataBase->getSectorEconomico();
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="plugins/system/pluginMicroservicios/PlanModular-Front/styles.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <title>Servicios y Microservicios</title>
 </head>
 <body>
-    <main>
-        <section id="categorias" style="display: none;" >
+    <main class="container">
+        <section id="categorias" class="section-container" style="display: none;" >
             <div id="mostrar_categorias">
                 <h3>Categoria de servicios</h3>
                 <div id="categorias_tabla">
-                    <table>
+                    <table class="table table-dark table-striped">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -46,7 +46,7 @@ $sectores = $dataBase->getSectorEconomico();
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $categoria->nombre; ?></td>
                                 <td>
-                                    <button type="button" id="datos_editar_categorias" data-id='<?php echo $categoria->id; ?>' data-nombre='<?php echo $categoria->nombre; ?>' >Edit</button>
+                                    <button type="button" class="btn btn-outline-light" id="datos_editar_categorias" data-id='<?php echo $categoria->id; ?>' data-nombre='<?php echo $categoria->nombre; ?>' >Edit</button>
                                 </td>
                             </tr>      
                             <?php endforeach; ?>
@@ -63,7 +63,7 @@ $sectores = $dataBase->getSectorEconomico();
                     <input type="text" name="agregar_nombre_categoria" id="agregar_nombre_categoria" placeholder="nombre de la categoria" />
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Agregar</button>
+                    <button type="submit" class="btn btn-outline-dark">Agregar</button>
                 </form>
             </div>
 
@@ -76,7 +76,7 @@ $sectores = $dataBase->getSectorEconomico();
                     <input type="text" name="editar_categoria_nombre" id="editar_categoria_nombre" />
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Actualizar</button>
+                    <button type="submit" class="btn btn-outline-dark">Actualizar</button>
                 </form>
             </div>
         </section>
@@ -84,11 +84,12 @@ $sectores = $dataBase->getSectorEconomico();
             <div id="mostrar_servicios">
                 <h3>Servicios</h3>
                 <div id="servicios_tabla">
-                    <table>
+                    <table class="table table-dark table-striped">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Nombre</th>
+                                <th>Estrategia</th>
                                 <th>Categoria</th>
                                 <th>Acciones</th>
                             </tr>
@@ -99,9 +100,10 @@ $sectores = $dataBase->getSectorEconomico();
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $ser->nombre; ?></td>
+                                <td><?php echo $ser->estrategia; ?></td>
                                 <td><?php echo $ser->categoria; ?></td>
                                 <td>
-                                    <button type="button" id="datos_editar_servicios" data-id='<?php echo $ser->id; ?>' data-nombre='<?php echo $ser->nombre; ?>' data-categoria='<?php echo $ser->categoria_id ?>'>Edit</button>
+                                    <button type="button" class="btn btn-outline-light" id="datos_editar_servicios" data-id='<?php echo $ser->id; ?>' data-nombre='<?php echo $ser->nombre; ?>' data-estrategia='<?php echo $ser->estrategia; ?>' data-categoria='<?php echo $ser->categoria_id ?>'>Edit</button>
                                 </td>
                             </tr>      
                             <?php endforeach; ?>
@@ -117,6 +119,14 @@ $sectores = $dataBase->getSectorEconomico();
                     <label for="agregar_nombre_servicio">Nombre: </label>    
                     <input type="text" name="agregar_nombre_servicio" id="agregar_nombre_servicio" />
                     <label for="agregar_categoria_servicio" >Categoria: </label>
+                    <label for="agregar_estrategia_servicio">Estrategia: </label>
+                    <select name="agregar_estrategia_servicio" id="agregar_estrategia_servicio">
+                        <option value=""> -- </option>
+                        <option value="branding">Branding</option>
+                        <option value="organicGrowth">Organic Growth</option>
+                        <option value="totalGrowth">Total Growth</option>
+                        <option value="levelSEO"> Level SEO</option>
+                    </select>
                     <select name="agregar_categoria_servicio" id="agregar_categoria_servicio">
                         <option value=""> -- </option>
                         <?php foreach($categoria_servicios as $categories): ?>
@@ -126,7 +136,7 @@ $sectores = $dataBase->getSectorEconomico();
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Agregar</button>
+                    <button type="submit" class="btn btn-outline-dark">Agregar</button>
                 </form>
             </div>
 
@@ -137,6 +147,14 @@ $sectores = $dataBase->getSectorEconomico();
                     <input type="hidden" name="caso" value="editar_servicio" />
                     <label for="editar_nombre_servicio">Nombre: </label>
                     <input type="text" name="editar_servicio_nombre" id="editar_servicio_nombre" />
+                    <label for="editar_servicio_estrategia">Estrategia: </label>
+                    <select name="editar_servicio_estrategia" id="editar_servicio_estrategia">
+                        <option value=""> -- </option>
+                        <option value="branding">Branding</option>
+                        <option value="organicGrowth">Organic Growth</option>
+                        <option value="totalGrowth">Total Growth</option>
+                        <option value="levelSEO"> Level SEO</option>
+                    </select>
                     <label for="editar_categoria_servicio" >Categoria: </label>
                     <select name="editar_categoria_servicio" id="editar_categoria_servicio">
                         <option value=""> -- </option>
@@ -147,7 +165,7 @@ $sectores = $dataBase->getSectorEconomico();
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Actualizar</button>
+                    <button type="submit" class="btn btn-outline-dark">Actualizar</button>
                 </form>
             </div>
         </section>
@@ -155,7 +173,7 @@ $sectores = $dataBase->getSectorEconomico();
             <div id="mostrar_microservicios">
                 <h3>Microservicios</h3>
                 <div id="servicios_tabla">
-                    <table>
+                    <table class="table table-dark table-striped">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -180,7 +198,7 @@ $sectores = $dataBase->getSectorEconomico();
                                 <td><?php echo $micro->gasto_publicidad; ?> EUR</td>
                                 <td><?php echo $micro->servicio; ?></td>
                                 <td>
-                                    <button type="button" id="datos_editar_microservicios" data-id='<?php echo $micro->id; ?>' data-nombre='<?php echo $micro->nombre; ?>' data-valor-impacto='<?php echo $micro->valor_impacto; ?>' data-valor-costo='<?php echo $micro->valor_de_costo; ?>' data-valor-ingreso='<?php echo $micro->valor_de_ingreso; ?>' data-gasto-publicidad='<?php echo $micro->gasto_publicidad; ?>' data-servicio='<?php echo $micro->servicio_id; ?>'>Edit</button>
+                                    <button type="button" id="datos_editar_microservicios" class="btn btn-outline-light" data-id='<?php echo $micro->id; ?>' data-nombre='<?php echo $micro->nombre; ?>' data-valor-impacto='<?php echo $micro->valor_impacto; ?>' data-valor-costo='<?php echo $micro->valor_de_costo; ?>' data-valor-ingreso='<?php echo $micro->valor_de_ingreso; ?>' data-gasto-publicidad='<?php echo $micro->gasto_publicidad; ?>' data-servicio='<?php echo $micro->servicio_id; ?>'>Edit</button>
                                 </td>	
                             </tr>      
                             <?php endforeach; ?>
@@ -196,7 +214,7 @@ $sectores = $dataBase->getSectorEconomico();
                     <label for="agregar_nombre_microservicio">Nombre: </label>    
                     <input type="text" name="agregar_nombre_microservicio" id="agregar_nombre_microservicio" />
                     <label for="agregar_valor_impacto_microservicio">Valor de Impacto: </label>    
-                    <input type="number" name="agregar_valor_impacto_microservicio" id="agregar_valor_impacto_microservicio" />
+                    <input type="number" name="agregar_valor_impacto_microservicio" id="agregar_valor_impacto_microservicio" step="0.01" />
                     <label for="agregar_valor_costo_microservicio">Valor de costo: </label>    
                     <input type="number" name="agregar_valor_costo_microservicio" id="agregar_valor_costo_microservicio" step="0.01"/>
                     <label for="agregar_valor_ingreso_microservicio">Valor de Ingresos: </label>    
@@ -213,7 +231,7 @@ $sectores = $dataBase->getSectorEconomico();
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Agregar</button>
+                    <button type="submit" class="btn btn-outline-dark">Agregar</button>
                 </form>
             </div>
 
@@ -225,7 +243,7 @@ $sectores = $dataBase->getSectorEconomico();
                     <label for="editar_nombre_microservicio">Nombre: </label>    
                     <input type="text" name="editar_nombre_microservicio" id="editar_nombre_microservicio" />
                     <label for="editar_valor_impacto_microservicio">Valor de Impacto: </label>    
-                    <input type="number" name="editar_valor_impacto_microservicio" id="editar_valor_impacto_microservicio" />
+                    <input type="number" name="editar_valor_impacto_microservicio" id="editar_valor_impacto_microservicio" step="0.01"/>
                     <label for="editar_valor_costo_microservicio">Valor de costo: </label>    
                     <input type="number" name="editar_valor_costo_microservicio" id="editar_valor_costo_microservicio" step="0.01"/>
                     <label for="editar_valor_ingreso_microservicio">Valor de Ingresos: </label>    
@@ -242,7 +260,7 @@ $sectores = $dataBase->getSectorEconomico();
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Actualizar</button>
+                    <button type="submit" class="btn btn-outline-dark">Actualizar</button>
                 </form>
             </div>
         </section>
@@ -250,7 +268,7 @@ $sectores = $dataBase->getSectorEconomico();
             <div id="mostrar_sector">
                 <h3>Sectores Economicos: </h3>
                 <div id="sector_tabla">
-                    <table>
+                    <table class="table table-dark table-striped">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -276,7 +294,7 @@ $sectores = $dataBase->getSectorEconomico();
                                     </ul>   
                                 </td>
                                 <td>
-                                    <button type="button" id="datos_editar_sector" data-id='<?php echo $sector_data['id']; ?>' data-nombre='<?php echo $sector_data['nombre']; ?>' data-recomendaciones='<?php echo $sector_data['recomendaciones']; ?>' data-microservicios='<?php  foreach ($sector_data['microservicios'] as $micro): echo $micro['id'];?>,<?php endforeach; ?>'>Edit</button>
+                                    <button type="button" id="datos_editar_sector" class="btn btn-outline-light" data-id='<?php echo $sector_data['id']; ?>' data-nombre='<?php echo $sector_data['nombre']; ?>' data-recomendaciones='<?php echo $sector_data['recomendaciones']; ?>' data-microservicios='<?php  foreach ($sector_data['microservicios'] as $micro): echo $micro['id'];?>,<?php endforeach; ?>'>Edit</button>
                                     <?php endforeach; ?>
                                 </td>
                             </tr>      
@@ -302,7 +320,7 @@ $sectores = $dataBase->getSectorEconomico();
                         <?php endforeach ?>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Agregar</button>
+                    <button type="submit" class="btn btn-outline-dark">Agregar</button>
                 </form>
             </div>
 
@@ -324,19 +342,20 @@ $sectores = $dataBase->getSectorEconomico();
                     <?php endforeach ?>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
-                    <button type="submit">Actualizar</button>
+                    <button type="submit" class="btn btn-outline-dark">Actualizar</button>
                 </form>
             </div>
         </section>
 
-        <section>
-        <button type="button" id="btn_categorias">Categorias</button>
-        <button type="button" id="btn_servicios">Servicios</button>
-        <button type="button" id="btn_microservicios">Microservicios</button>
-        <button type="button" id="btn_sector">Sectores Economicos</button>
+        <section class="btn-group m-5" role="group">
+        <button type="button" id="btn_categorias" class="btn btn-outline-dark">Categorias</button>
+        <button type="button" id="btn_servicios" class="btn btn-outline-dark">Servicios</button>
+        <button type="button" id="btn_microservicios" class="btn btn-outline-dark">Microservicios</button>
+        <button type="button" id="btn_sector" class="btn btn-outline-dark">Sectores Economicos</button>
         </section>
         
     </main>
-    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js" integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js" integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ" crossorigin="anonymous"></script>
 </body>
 </html>

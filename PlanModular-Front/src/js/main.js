@@ -170,7 +170,7 @@ function generateServices(data, context, target){
                         selectedMicroServices[serviceId] = [microServiceId]
                     }
                     else {
-                        selectedMicroServices[serviceId].push(microServiceId)
+                        selectedMicroServices[serviceId.split('-').join('')].push(microServiceId.split('-').join(''))
                     }
                 }
                 let buttonsContainer = document.getElementsByClassName(`detailed-${serviceId}-button`);
@@ -279,6 +279,7 @@ signupButton.addEventListener('click', function (){
                 email,
                 phone,
                 company,
+                tipo: 'guardarDatos'
             },
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -294,12 +295,13 @@ signupButton.addEventListener('click', function (){
             .catch(err => {
                 console.log(err)
                 alert(err.message);
-            })
+            });
 
     }
 
 })
 submitButton.addEventListener('click', function () {
+
     let actives = document.getElementsByClassName('active');
     for (let i = 0; i < actives.length; i++) {
         if(actives[i].classList.contains('detailed-sector-button')){
@@ -315,34 +317,41 @@ submitButton.addEventListener('click', function () {
     if(selectedCommercialSector === null || selectedCountry === null || expenses === null || expenses === '' || roi === null || roi === '' || Object.keys(selectedMicroServices).length === 0) {
         errorMessage.innerHTML = 'Missing fields';
     } else {
+
+        console.log('microservicios: ', selectedMicroServices);
+
+        console.log('sector', selectedCommercialSector);
+
+        const formData = new FormData();
+        formData.append('microServices', JSON.stringify(selectedMicroServices));
+        formData.append('sector-comercial', selectedCommercialSector);
+        formData.append('country', selectedCountry);
+        formData.append('expenses', expenses);
+        formData.append('roi', roi);
+        formData.append('tipo', 'userForm');
+
         fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
             method: 'POST',
-            body: {
-                selectedCommercialSector,
-                selectedCountry,
-                expenses,
-                roi,
-                selectedMicroServices,
-            },
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
+            body: formData
         })
             .then(response => response.json())
             .then(data => {
-                branding = data.branding;
-                brandingPercentage.innerHTML = `${data.branding}%`;
-                organicGrowth = data.organicGrowth;
-                organicGrowthPercentage.innerHTML = `${data.organicGrowth}%`;
-                totalGrowth = data.totalGrowth;
-                totalGrowthPercentage.innerHTML = `${data.totalGrowth}%`;
-                seoLevel = data.seoLevel;
-                seoPercentage.innerHTML = `${data.seoLevel}%`;
-                countriesList = data.countriesList;
+                let dataMicroservices = data.data && JSON.parse(data.data[0]);
+
+                console.log(dataMicroservices);
+                branding = dataMicroservices[0].branding;
+                brandingPercentage.innerHTML = `${branding}%`;
+                organicGrowth = dataMicroservices[0].organicGrowth;
+                organicGrowthPercentage.innerHTML = `${organicGrowth}%`;
+                totalGrowth = dataMicroservices[0].totalGrowth;
+                totalGrowthPercentage.innerHTML = `${totalGrowth}%`;
+                seoLevel = dataMicroservices[0].seoLevel;
+                seoPercentage.innerHTML = `${seoLevel}%`;
+                countriesList = dataMicroservices[0].country;
                 sales = data.sales;
                 salesPercentage.innerHTML = `${data.sales}%`;
-                projectedEarnings = data.projectedEarnings;
-                projectedEarningsMoney.innerHTML = `${data.projectedEarnings}%`;
+                projectedEarnings =  dataMicroservices[0].projectedEarnings;
+                projectedEarningsMoney.innerHTML = `${projectedEarnings}%`;
 
                 errorMessage.innerHTML = '';
                 dashboard.classList.add('d-visible');
@@ -356,7 +365,7 @@ submitButton.addEventListener('click', function () {
                 console.log(err)
                 alert(err.message);
 
-            })
+            });
         // testSector.innerHTML = selectedCommercialSector;
         // testCountry.innerHTML = selectedCountry;
         // testExpenses.innerHTML = expenses;

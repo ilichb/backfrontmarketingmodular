@@ -48,9 +48,9 @@ class DataBase
                 break;
 
             case 'servicios':
-                $columns = ['nombre', 'categoria_id'];
+                $columns = ['nombre', 'estrategia', 'categoria_id'];
     
-                $values = [$this->db->quote($data['nombre']), $this->db->quote($data['categoria_id'])];
+                $values = [$this->db->quote($data['nombre']), $this->db->quote($data['estrategia']), $this->db->quote($data['categoria_id'])];
 
                 $query->insert($this->db->quoteName('servicios'))
                 ->columns($this->db->quoteName($columns))
@@ -58,6 +58,8 @@ class DataBase
                 break;    
             
             case 'microservicios':
+                $this->restarValorMicroservicio($data['valor_impacto'], 'agregar');
+                
                 $columns = ['nombre', 'valor_impacto', 'valor_de_costo', 'valor_de_ingreso', 'gasto_publicidad', 'servicio_id'];
 
                 $values = [$this->db->quote($data['nombre']),
@@ -93,6 +95,74 @@ class DataBase
             $this->guardarRelacion(intval($sectorId), $data['microservicio_id']);
         }
         $query->clear();
+    }
+
+    protected function restarValorMicroservicio($data, $tipo, $nombre = ''){
+        $microservicios = $this->getMicroservicios();
+        $total = count($microservicios);
+
+        if($total === 0){
+            return false;
+        }
+
+        if($tipo === 'agregar'){
+        
+            $valor_restar =  $data / $total ;
+
+            foreach($microservicios as $micros){
+                $query = $this->db->getQuery(true);
+
+                $resta = $micros->valor_impacto - $valor_restar;
+
+                $datos = array($this->db->quoteName('valor_impacto').'='.$this->db->quote($resta));
+
+                $condiciones = array($this->db->quoteName('id').'='.$this->db->quote($micros->id));
+
+                $query->update($this->db->quoteName('microservicios'))
+                ->set($datos)
+                ->where($condiciones);
+
+                $this->db->setQuery($query);
+                $this->db->execute();
+                $query->clear();
+            }
+        }
+
+        if($tipo === 'editar'){
+            $valorExistente = 0;
+            $total = count($microservicios) - 1;
+
+            foreach($microservicios as $valor){
+                if($valor->nombre === $nombre){
+                    $valorExistente = floatval($valor->valor_impacto);
+                }
+            }
+
+            $diferencia = $data - $valorExistente;
+
+            $factorEscala = $diferencia / $total;
+
+
+            foreach($microservicios as $micros){
+                if($micros->nombre !== $nombre){
+                $query = $this->db->getQuery(true);
+
+                $restar = $micros->valor_impacto - $factorEscala;
+
+                $datos = array($this->db->quoteName('valor_impacto').'='.$this->db->quote($restar));
+
+                $condiciones = array($this->db->quoteName('id').'='.$this->db->quote($micros->id));
+
+                $query->update($this->db->quoteName('microservicios'))
+                ->set($datos)
+                ->where($condiciones);
+
+                $this->db->setQuery($query);
+                $this->db->execute();
+                $query->clear();
+                }
+            }
+        }
     }
 
     protected function guardarRelacion($sectorId, $microservicios){
@@ -140,6 +210,7 @@ class DataBase
 
                 $datos = array(
                     $this->db->quoteName('nombre').'='.$this->db->quote($data['nombre']),
+                    $this->db->quoteName('estrategia').'='.$this->db->quote($data['estrategia']),
                     $this->db->quoteName('categoria_id').'='.$this->db->quote($data['categoria_id'])
                 );
 
@@ -153,6 +224,8 @@ class DataBase
                 break;
             
             case 'microservicios':
+
+                $this->restarValorMicroservicio($data['valor_impacto'], 'editar', $data['nombre']);
 
                 $datos = array(
                     $this->db->quoteName('nombre').'='.$this->db->quote($data['nombre']),
@@ -253,7 +326,7 @@ class DataBase
     public function getServicios(){
         $query = $this->db->getQuery(true);
 
-        $query->select(array($this->db->quoteName('s.id'), $this->db->quoteName('s.nombre'), $this->db->quoteName('c.nombre', 'categoria'), $this->db->quoteName('s.categoria_id')))
+        $query->select(array($this->db->quoteName('s.id'), $this->db->quoteName('s.nombre'), $this->db->quoteName('s.estrategia'), $this->db->quoteName('c.nombre', 'categoria'), $this->db->quoteName('s.categoria_id')))
         ->from($this->db->quoteName('servicios', 's'))
         ->join('LEFT', $this->db->quoteName('categoria_servicios', 'c').'ON('.$this->db->quoteName('s.categoria_id').'='.$this->db->quoteName('c.id').')');
         
@@ -271,7 +344,8 @@ class DataBase
 
         $query->select(array($this->db->quoteName('m.id'), $this->db->quoteName('m.nombre'), $this->db->quoteName('m.valor_impacto'), $this->db->quoteName('m.valor_de_costo'), $this->db->quoteName('m.valor_de_ingreso'), $this->db->quoteName('m.gasto_publicidad'),$this->db->quoteName('s.nombre', 'servicio'), $this->db->quoteName('m.servicio_id')))
         ->from($this->db->quoteName('microservicios', 'm'))
-        ->join('LEFT', $this->db->quoteName('servicios', 's').'ON('.$this->db->quoteName('m.servicio_id').'='.$this->db->quoteName('s.id').')');
+        ->join('LEFT', $this->db->quoteName('servicios', 's').'ON('.$this->db->quoteName('m.servicio_id').'='.$this->db->quoteName('s.id').')')
+        ->order($this->db->quoteName('m.valor_impacto').'DESC');
         
         $this->db->setQuery($query);
 
@@ -289,7 +363,7 @@ class DataBase
         ->from($this->db->quoteName('sector_economico', 'se'))
         ->join('LEFT', $this->db->quoteName('sector_microservicios', 'sm').'ON('.$this->db->quoteName('se.id').'='.$this->db->quoteName('sm.sector_id').')')
         ->join('LEFT', $this->db->quoteName('microservicios', 'm').'ON('. $this->db->quoteName('m.id').'='.$this->db->quoteName('sm.microservicio_id').')')
-        ->order($this->db->quoteName('m.valor_impacto'));
+        ->order($this->db->quoteName('m.valor_impacto').'DESC');
 
         $this->db->setQuery($query);
 
@@ -316,6 +390,26 @@ class DataBase
         }
 
         return $result;
+
+    }
+
+    public function getSectorEconomicoName($name){
+        $query = $this->db->getQuery(true);
+
+        $query->select(array($this->db->quoteName('se.nombre', 'sector_nombre'), $this->db->quoteName('se.recomendaciones','sector_recomendaciones'), $this->db->quoteName('m.nombre','microservicios_nombre')))
+        ->from($this->db->quoteName('sector_economico', 'se'))
+        ->join('INNER', $this->db->quoteName('sector_microservicios', 'sm').'ON('.$this->db->quoteName('se.id').'='.$this->db->quoteName('sm.sector_id').')')
+        ->join('INNER', $this->db->quoteName('microservicios', 'm').'ON('. $this->db->quoteName('m.id').'='.$this->db->quoteName('sm.microservicio_id').')')
+        ->where($this->db->quoteName('se.nombre').'='.$this->db->quote($name))
+        ->order($this->db->quoteName('m.valor_impacto').'DESC');
+        
+        $this->db->setQuery($query);
+
+        $sectores = $this->db->loadObjectList() ?? [];
+
+        $query->clear();
+
+        return $sectores;
 
     }
 }

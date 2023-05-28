@@ -1,36 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+    //secciones
+    let categorias = document.getElementById('categorias');
+    let servicios = document.getElementById('servicios');
+    let microservicios = document.getElementById('microservicios');
+    let sector = document.getElementById('sector');    
+
     //funcionalidad de los botones
     document.getElementById('btn_categorias').addEventListener('click', () => {
-        let categorias = document.getElementById('categorias');
         if(categorias.style.display === 'none'){
             categorias.style.display = 'block';
-        } else {
-            categorias.style.display = 'none'
+            servicios.style.display = 'none';
+            microservicios.style.display = 'none';
+            sector.style.display = 'none';
         }
     });
     document.getElementById('btn_servicios').addEventListener('click', () => {
-        let servicios = document.getElementById('servicios');
         if(servicios.style.display === 'none'){
             servicios.style.display = 'block';
-        } else {
-            servicios.style.display = 'none'
+            categorias.style.display = 'none';
+            microservicios.style.display = 'none';
+            sector.style.display = 'none';
         }
     });
     document.getElementById('btn_microservicios').addEventListener('click', () => {
-        let microservicios = document.getElementById('microservicios');
         if(microservicios.style.display === 'none'){
             microservicios.style.display = 'block';
-        } else {
-            microservicios.style.display = 'none'
-        }
+            categorias.style.display = 'none';
+            servicios.style.display = 'none';
+            sector.style.display = 'none';
+        } 
     });
     document.getElementById('btn_sector').addEventListener('click', () => {
-        let sector = document.getElementById('sector');
         if(sector.style.display === 'none'){
             sector.style.display = 'block';
-        } else {
-            sector.style.display = 'none'
+            servicios.style.display = 'none';
+            categorias.style.display = 'none';
+            microservicios.style.display = 'none';
+            
         }
     });
 
@@ -53,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         } else {
             alert('error');
+            location.reload();
         }
 
     });
@@ -91,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         } else {
             alert('error');
+            location.reload();
         }
     });
 
@@ -114,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         } else {
             alert('error');
+            location.reload();
         }
 
     });
@@ -126,11 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
             //datos de cada uno de los botones
             const id = e.target.getAttribute('data-id');
             const nombre = e.target.getAttribute('data-nombre');
+            const estrategia = e.target.getAttribute('data-estrategia');
             const categoria = e.target.getAttribute('data-categoria');
 
             //llenamos el formulario de editar
             document.getElementById('editar_id_servicio').value = id;
             document.getElementById('editar_servicio_nombre').value = nombre;
+            document.getElementById('editar_servicio_estrategia').value = estrategia;
             document.getElementById('editar_categoria_servicio').value = categoria
         });
     });
@@ -154,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         } else {
             alert('error');
+            location.reload();
         }
     });
 
@@ -178,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.log(jsonResponse)
             alert('error');
+            location.reload();
         }
 
     });
@@ -226,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload();
         } else {
             alert('error');
+            location.reload();
         }
     });
 
@@ -279,7 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let microserviciosId = microservicios.split(',').map((id) => parseInt(id));
             microserviciosId.pop();
-            console.log(microserviciosId);
 
             for(let checkbox of checkboxEditar){
                 for(let ms of microserviciosId){
@@ -318,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             console.log(jsonResponse)
             alert('error');
+            location.reload();
         }
     })
 })

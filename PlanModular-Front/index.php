@@ -121,7 +121,7 @@
                 <input type="text" id="roi-input" name="roi">
             </div>
             <div class="submit-button-container">
-                <button id="submit-button" class="submit-button">ENVIAR</button>
+                <button type='button' id="submit-button" class="submit-button">ENVIAR</button>
             </div>
             <p id="error-message"></p>
         </div>
