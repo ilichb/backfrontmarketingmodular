@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `usuario` (
     `organicGrowth` decimal(10, 2) NOT NULL,
     `totalGrowth` decimal(10, 2) NOT NULL,
     `levelSEO` decimal(10, 2) NOT NULL,
-    `microservicios` text NOT NULL;
+    `microservicios` text NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
