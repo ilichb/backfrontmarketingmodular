@@ -44,9 +44,17 @@ CREATE TABLE IF NOT EXISTS `usuario` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `nombre` varchar(255) NOT NULL,
     `email` varchar(255) NOT NULL UNIQUE,
+    `telefono`  varchar(100) NOT NULL,
+    `pais` varchar(100),
+    `ganancias` decimal(10, 2),
+    `ventasTrimestr` decimal(10, 2),
     `empresa` varchar(255) NOT NULL UNIQUE,
     `sector` varchar(255) NOT NULL,
-    `respuesta_algoritmo` text,
+    `branding` decimal(10, 2) NOT NULL,
+    `organicGrowth` decimal(10, 2) NOT NULL,
+    `totalGrowth` decimal(10, 2) NOT NULL,
+    `levelSEO` decimal(10, 2) NOT NULL,
+    `microservicios` text NOT NULL;
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -238,6 +238,7 @@ use Joomla\CMS\Session\Session;
                 else {
                     if($this->user){
                         $tipo = $input->getString('tipo', '', 'cmd');
+                        $microserviciosUser = array();
                         switch ($tipo) {
                             case 'userForm':
 
@@ -250,6 +251,12 @@ use Joomla\CMS\Session\Session;
                                 $cadena = $serviciosMicroservicios[0];
                                 $sin_scape = stripslashes($cadena);
                                 $microservicios = json_decode($sin_scape, true);
+
+                                foreach($microservicios as $microservicio){
+                                    foreach($microservicio as $micro){
+                                        $microserviciosUser[] = $micro;
+                                    }
+                                }
 
                                 $algoritmo = new Algoritmo($sectorEconomico, $microservicios, $roi, $expenses);
 
@@ -271,8 +278,9 @@ use Joomla\CMS\Session\Session;
                                 $dataResponse['projectedEarnings'] = $projectedEarning;
                                 $dataResponse['plantillaRelacion'] = $plantilla;
                                 $dataResponse['sales'] = $sales;
-                                    
+                                
                                 $this->session->set('dataUser', $dataResponse);
+                                $this->session->set('microserviciosUser', $microserviciosUser);
 
                                 break;
 
@@ -281,7 +289,10 @@ use Joomla\CMS\Session\Session;
                                     $email = $input->get('email', '', 'string');
                                     $phone = $input->get('phone', '', 'string');
                                     $company = $input->get('company', '', 'string');
+                                    $datos = $this->session->get('dataUser');
+                                    $datosMicroservicios = $this->session->get('microserviciosUser');
 
+                                    
 
                                 break;
                                     
