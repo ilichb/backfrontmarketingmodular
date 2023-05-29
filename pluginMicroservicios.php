@@ -52,6 +52,8 @@ use Joomla\CMS\Session\Session;
  
          if($this->admin){
              $document->addScript(Uri::base().'plugins/system/pluginMicroservicios/js/admin.js');
+             $document->addStyleSheet(Uri::base().'plugins/system/pluginMicroservicios/css/admin.css');
+
              
              if($context === 'com_content.article'){
                  if(strpos($article->text, '{microserviciosFormAdmin}') === false){
@@ -95,187 +97,204 @@ use Joomla\CMS\Session\Session;
 
     public function onAjaxPluginMicroservicios(){
         //verificamos el token del formulario
-       // Session::getFormToken() or jexit(Text::_('Token no valido'));
+       Session::getFormToken() or jexit(Text::_('Token no valido'));
 
         $input = $this->app->input;
-        $accion = $input->get('accion', '', 'cmd');
         $method = $input->getMethod();
-        $dataResponse = array();
 
         require_once __DIR__.'/database/database.php';
         $dataBase = new DataBase;
-
-        require_once __DIR__.'/algoritmo/algoritmo.php';
-
-        if($this->admin){
-
-            if($accion === 'agregar'){
-                $tipo = $input->get('tipo', '', 'cmd');
-
-                //para guardar los datos
-                switch ($tipo) {
-                    case 'guardar_categoria':
-                        $data = [
-                            'nombre' => $input->get('agregar_nombre_categoria', '', 'string')
-                        ]; 
-                        $tabla = 'categoria_servicios';
-                        $dataBase->executeGuardar($data, $tabla, $method);
-                        break;
-                    case 'guardar_servicio':
-                        $data = [
-                            'nombre' => $input->get('agregar_nombre_servicio', '', 'string'),
-                            'estrategia' => $input->get('agregar_estrategia_servicio', '', 'string'),
-                            'categoria_id' => $input->get('agregar_categoria_servicio', 0, 'number')
-                        ];
         
-                        $tabla = 'servicios';
-                        $dataBase->executeGuardar($data, $tabla, $method);
-                            break;
-                    case 'guardar_microservicio':
-                        $data = [
-                            'nombre' => $input->get('agregar_nombre_microservicio', '', 'string'),
-                            'valor_impacto' => $input->get('agregar_valor_impacto_microservicio', 0.0, 'decimal'),
-                            'valor_de_costo' => $input->get('agregar_valor_costo_microservicio', 0.0, 'decimal'),
-                            'valor_de_ingreso' => $input->get('agregar_valor_ingreso_microservicio', 0.0, 'decimal'),
-                            'gasto_publicidad' => $input->get('agregar_gasto_publicidad_microservicio', 0.0, 'decimal'),
-                            'servicio_id' => $input->get('agregar_servicio_microservicio', 0, 'number')
-                        ];
+        if($method === 'GET'){
+            $servicios = $dataBase->getServicios(); 
+            $microserviciosForm = $dataBase->getMicroservicios();
+            $sectorEco = $dataBase->getSectorEconomico();
 
-                        $tabla = 'microservicios';
-                        $dataBase->executeGuardar($data, $tabla, $method);
-                        break;
-                    
-                    case 'guardar_sector':
+            $result = array('servicios' => $servicios, 'microservicios' => $microserviciosForm, 'sectorEconomico' => $sectorEco);
+
+            return json_encode($result);
+            exit;
+        }
+
+        if($method === 'POST'){
+            $accion = $input->get('accion', '', 'cmd');
+            $dataResponse = array();
+
+            require_once __DIR__.'/algoritmo/algoritmo.php';
+            
+            if($this->admin){
+                if($accion === 'agregar'){
+                    $tipo = $input->get('tipo', '', 'cmd');
+                    //para guardar los datos
+                    switch ($tipo) {
+                        case 'guardar_categoria':
+                            $data = [
+                                'nombre' => $input->get('agregar_nombre_categoria', '', 'string')
+                            ]; 
+                            $tabla = 'categoria_servicios';
+                            $dataBase->executeGuardar($data, $tabla, $method);
+                            break;
+                        case 'guardar_servicio':
+                            $data = [
+                                'nombre' => $input->get('agregar_nombre_servicio', '', 'string'),
+                                'estrategia' => $input->get('agregar_estrategia_servicio', '', 'string'),
+                                'categoria_id' => $input->get('agregar_categoria_servicio', 0, 'number')
+                            ];
+            
+                            $tabla = 'servicios';
+                            $dataBase->executeGuardar($data, $tabla, $method);
+                            break;
+                        case 'guardar_microservicio':
+                            $data = [
+                                'nombre' => $input->get('agregar_nombre_microservicio', '', 'string'),
+                                'valor_impacto' => $input->get('agregar_valor_impacto_microservicio', 0.0, 'decimal'),
+                                'valor_de_costo' => $input->get('agregar_valor_costo_microservicio', 0.0, 'decimal'),
+                                'valor_de_ingreso' => $input->get('agregar_valor_ingreso_microservicio', 0.0, 'decimal'),
+                                'gasto_publicidad' => $input->get('agregar_gasto_publicidad_microservicio', 0.0, 'decimal'),
+                                'servicio_id' => $input->get('agregar_servicio_microservicio', 0, 'number')
+                            ];
+
+                            $tabla = 'microservicios';
+                            $dataBase->executeGuardar($data, $tabla, $method);
+                            break;
+                        
+                        case 'guardar_sector':
                             $data = [
                                 'nombre' => $input->get('agregar_nombre_sector', '', 'string'),
                                 'recomendaciones' => $input->get('agregar_recomendaciones_sector', '', 'string'),
                                 'microservicio_id' => $input->get('microservicios_user', array(), 'array')
                             ];
-    
+
                             $tabla = 'sector_economico';
                             $dataBase->executeGuardar($data, $tabla, $method);
                             break;
 
-                    default: 
-                        break;
-                }
-            } 
-            if($accion === 'editar'){
-                //para editar
-                $caso = $input->get('caso', '', 'cmd');
+                        default: 
+                            break;
+                        }
+                    } 
+                if($accion === 'editar'){
+                    //para editar
+                    $caso = $input->get('caso', '', 'cmd');
                 
-                switch ($caso){
-                    case 'editar_categoria':
-                        $data = [
-                            'id' => $input->get('editar_id_categoria', 0, 'number'),
-                            'nombre' => $input->get('editar_categoria_nombre', '', 'string')
-                        ];
+                    switch ($caso){
+                        case 'editar_categoria':
+                            $data = [
+                                'id' => $input->get('editar_id_categoria', 0, 'number'),
+                                'nombre' => $input->get('editar_categoria_nombre', '', 'string')
+                            ];
+                            
+                            $tabla = 'categoria_servicios';
+
+                            $dataBase->executeEditar($data, $tabla);
+                            break;
+                        case 'editar_servicio':
+                            $data = [
+                                'id' => $input->get('editar_id_servicio', 0, 'number'),
+                                'nombre' => $input->get('editar_servicio_nombre', '', 'string'),
+                                'estrategia' => $input->get('editar_servicio_estrategia', '', 'string'),
+                                'categoria_id' => $input->get('editar_categoria_servicio', 0, 'number')
+                            ];
+
+                            $tabla = 'servicios';
+
+                            $dataBase->executeEditar($data, $tabla);
+                            break;
+                            
+                        case 'editar_microservicio':
+                            $data = [
+                                'id' => $input->get('editar_id_microservicio', 0, 'number'),
+                                'nombre' => $input->get('editar_nombre_microservicio', '', 'string'),
+                                'valor_impacto' => $input->get('editar_valor_impacto_microservicio', 0.0, 'decimal'),
+                                'valor_de_costo' => $input->get('editar_valor_costo_microservicio', 0.0, 'decimal'),
+                                'valor_de_ingreso' => $input->get('editar_valor_ingreso_microservicio', 0.0, 'decimal'),
+                                'gasto_publicidad' => $input->get('editar_gasto_publicidad_microservicio', 0.0, 'decimal'), 
+                                'servicio_id' => $input->get('editar_servicio_microservicio', 0, 'number')
+                            ];
+            
+                            $tabla = 'microservicios';
+            
+                            $dataBase->executeEditar($data, $tabla);
+                            break;
+
+                        case 'editar_sector':
+                            $data = [
+                                'id' => $input->get('editar_id_sector', 0, 'number'),
+                                'nombre' => $input->get('editar_nombre_sector', '', 'string'),
+                                'recomendaciones' => $input->get('editar_recomendaciones_sector', '', 'string'),
+                                'microservicios' => $input->get('microservicios_sector_editar', array(), 'array')
+                            ];
+                
+                            $tabla = 'sector_economico';
+
+                            $dataBase->executeEditar($data, $tabla);
+                            break;
                         
-                        $tabla = 'categoria_servicios';
+                        default:
+                            break;
+                        }
+                    }
+                } 
+                else {
+                    if($this->user){
+                        $tipo = $input->getString('tipo', '', 'cmd');
+                        switch ($tipo) {
+                            case 'userForm':
 
-                        $dataBase->executeEditar($data, $tabla);
-                        break;
-                    case 'editar_servicio':
-                        $data = [
-                            'id' => $input->get('editar_id_servicio', 0, 'number'),
-                            'nombre' => $input->get('editar_servicio_nombre', '', 'string'),
-                            'estrategia' => $input->get('editar_servicio_estrategia', '', 'string'),
-                            'categoria_id' => $input->get('editar_categoria_servicio', 0, 'number')
-                        ];
+                                $sectorEconomico = $input->get('sector-comercial', '','string');
+                                $expenses = $input->get('expenses', 0, 'number');
+                                $roi = $input->get('roi', 0, 'number');
+                                $country = $input->get('country', '', 'string');
+                                $serviciosMicroservicios = $input->get('microServices', [], 'array');
 
-                        $tabla = 'servicios';
+                                $cadena = $serviciosMicroservicios[0];
+                                $sin_scape = stripslashes($cadena);
+                                $microservicios = json_decode($sin_scape, true);
 
-                        $dataBase->executeEditar($data, $tabla);
-                        break;
-                    
-                    case 'editar_microservicio':
-                        $data = [
-                            'id' => $input->get('editar_id_microservicio', 0, 'number'),
-                            'nombre' => $input->get('editar_nombre_microservicio', '', 'string'),
-                            'valor_impacto' => $input->get('editar_valor_impacto_microservicio', 0.0, 'decimal'),
-                            'valor_de_costo' => $input->get('editar_valor_costo_microservicio', 0.0, 'decimal'),
-                            'valor_de_ingreso' => $input->get('editar_valor_ingreso_microservicio', 0.0, 'decimal'),
-                            'gasto_publicidad' => $input->get('editar_gasto_publicidad_microservicio', 0.0, 'decimal'), 
-                            'servicio_id' => $input->get('editar_servicio_microservicio', 0, 'number')
-                        ];
-    
-                        $tabla = 'microservicios';
-    
-                        $dataBase->executeEditar($data, $tabla);
-                        break;
+                                $algoritmo = new Algoritmo($sectorEconomico, $microservicios, $roi, $expenses);
 
-                    case 'editar_sector':
-                        $data = [
-                            'id' => $input->get('editar_id_sector', 0, 'number'),
-                            'nombre' => $input->get('editar_nombre_sector', '', 'string'),
-                            'recomendaciones' => $input->get('editar_recomendaciones_sector', '', 'string'),
-                            'microservicios' => $input->get('microservicios_sector_editar', array(), 'array')
-                        ];
-        
-                        $tabla = 'sector_economico';
+                                $branding = $algoritmo->matchBranding();
+                                $organicGrowth = $algoritmo->matchOrganicGrowth();
+                                $totalGrowth = $algoritmo->matchTotalGrowth();
+                                $seoLevel = $algoritmo->matchSeoLevel();
+                                $projectedEarning = $algoritmo->calculateRoi();
+                                $sales = $algoritmo->ventasTrimestre();
+                                $plantilla = $algoritmo->matchPlantilla();
+                                
+                                //guardamos en variables en variables de seccion por si el usuario desea guardarlas seccion 
+                                    
+                                $dataResponse['branding'] = $branding;
+                                $dataResponse['organicGrowth'] = $organicGrowth;
+                                $dataResponse['totalGrowth'] = $totalGrowth;
+                                $dataResponse['seoLevel'] = $seoLevel;
+                                $dataResponse['country'] = array($country); 
+                                $dataResponse['projectedEarnings'] = $projectedEarning;
+                                $dataResponse['plantillaRelacion'] = $plantilla;
+                                $dataResponse['sales'] = $sales;
+                                    
+                                $this->session->set('dataUser', $dataResponse);
 
-                        $dataBase->executeEditar($data, $tabla);
-                        break;
+                                break;
+
+                            case 'guardarDatos':
+                                    $name = $input->get('name', '', 'string');
+                                    $email = $input->get('email', '', 'string');
+                                    $phone = $input->get('phone', '', 'string');
+                                    $company = $input->get('company', '', 'string');
+
+
+                                break;
+                                    
+                            default:
+                                
+                                break;
+                            }
+                        }
+                    }
+                    $result = array($dataResponse, $this->session->set('dataUser'));     
+                    return json_encode($result);
                 
-                    default:
-                        break;
+                    exit;
                 }
             }
-        } else {
-            if($this->user){
-            if($method === 'POST'){
-                $tipo = $input->getString('tipo', '', 'cmd');
-                switch ($tipo) {
-                    case 'userForm':
-
-                        $sectorEconomico = $input->get('sector-comercial', '','string');
-                        $expenses = $input->get('expenses', 0, 'number');
-                        $roi = $input->get('roi', 0, 'number');
-                        $country = $input->get('country', '', 'string');
-                        $serviciosMicroservicios = $input->get('microServices', [], 'array');
-
-                        $cadena = $serviciosMicroservicios[0];
-                        $sin_scape = stripslashes($cadena);
-                        $microservicios = json_decode($sin_scape, true);
-
-
-                        $algoritmo = new Algoritmo($sectorEconomico, $microservicios, $roi, $expenses);
-
-                        $branding = $algoritmo->matchBranding();
-                        $organicGrowth = $algoritmo->matchOrganicGrowth();
-                        $totalGrowth = $algoritmo->matchTotalGrowth();
-                        $seoLevel = $algoritmo->matchSeoLevel();
-                        $projectedEarning = $algoritmo->calculateRoi();
-                        $plantilla = $algoritmo->matchPlantilla();
-
-                        //guardamos en variables en variables de seccion por si el usuario desea guardarlas seccion 
-                        
-                        $dataResponse['branding'] = $branding;
-                        $dataResponse['organicGrowth'] = $organicGrowth;
-                        $dataResponse['totalGrowth'] = $totalGrowth;
-                        $dataResponse['seoLevel'] = $seoLevel;
-                        $dataResponse['country'] = $country; 
-                        $dataResponse['projectedEarnings'] = $projectedEarning;
-                        $dataResponse['plantillaRelacion'] = $plantilla;
-                        
-                        $this->session->set('dataUser', $dataResponse);
-
-                        break;
-
-                    case 'guardarDatos':
-                        
-
-                        break;
-                        
-                    default:
-                        # code...
-                        break;
-                    }
-        }
-        }
-    }
-        $result = array('success' => true, $dataResponse);     
-        return json_encode($result);
-        exit;
-    }
- };
+};

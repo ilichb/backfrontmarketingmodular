@@ -130,26 +130,28 @@ class DataBase
 
         if($tipo === 'editar'){
             $valorExistente = 0;
-            $total = count($microservicios) - 1;
+            $sumTotal = 0;
 
             foreach($microservicios as $valor){
+                $sumTotal += $valor->valor_impacto;
                 if($valor->nombre === $nombre){
                     $valorExistente = floatval($valor->valor_impacto);
                 }
             }
 
-            $diferencia = $data - $valorExistente;
+            if($valorExistente === $data){
+                return;
+            }
 
-            $factorEscala = $diferencia / $total;
-
+            $sumRestante = $sumTotal - $valorExistente;
 
             foreach($microservicios as $micros){
                 if($micros->nombre !== $nombre){
                 $query = $this->db->getQuery(true);
 
-                $restar = $micros->valor_impacto - $factorEscala;
+                $valorNuevo = ($micros->valor_impacto / $sumRestante) * (100 - $data);
 
-                $datos = array($this->db->quoteName('valor_impacto').'='.$this->db->quote($restar));
+                $datos = array($this->db->quoteName('valor_impacto').'='.$this->db->quote($valorNuevo));
 
                 $condiciones = array($this->db->quoteName('id').'='.$this->db->quote($micros->id));
 

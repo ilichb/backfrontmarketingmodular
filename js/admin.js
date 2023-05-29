@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //secciones
     let categorias = document.getElementById('categorias');
     let servicios = document.getElementById('servicios');
-    let microservicios = document.getElementById('microservicios');
+    let microserviciosD = document.getElementById('microservicios');
     let sector = document.getElementById('sector');    
 
     //funcionalidad de los botones
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(categorias.style.display === 'none'){
             categorias.style.display = 'block';
             servicios.style.display = 'none';
-            microservicios.style.display = 'none';
+            microserviciosD.style.display = 'none';
             sector.style.display = 'none';
         }
     });
@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if(servicios.style.display === 'none'){
             servicios.style.display = 'block';
             categorias.style.display = 'none';
-            microservicios.style.display = 'none';
+            microserviciosD.style.display = 'none';
             sector.style.display = 'none';
         }
     });
     document.getElementById('btn_microservicios').addEventListener('click', () => {
-        if(microservicios.style.display === 'none'){
-            microservicios.style.display = 'block';
+        if(microserviciosD.style.display === 'none'){
+            microserviciosD.style.display = 'block';
             categorias.style.display = 'none';
             servicios.style.display = 'none';
             sector.style.display = 'none';
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sector.style.display = 'block';
             servicios.style.display = 'none';
             categorias.style.display = 'none';
-            microservicios.style.display = 'none';
+            microserviciosD.style.display = 'none';
             
         }
     });
@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos guardados');
             location.reload();
+            categorias.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -96,6 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos Editados Correctamente');
             location.reload();
+            categorias.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -120,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(jsonResponse)
             alert('Datos guardados');
             location.reload();
+            servicios.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -163,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos Editados Correctamente');
             location.reload();
+            servicios.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -187,6 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(jsonResponse)
             alert('Datos guardados');
             location.reload();
+            microserviciosD.style.display = 'block';
         } else {
             console.log(jsonResponse)
             alert('error');
@@ -237,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos Editados Correctamente');
             location.reload();
+            microserviciosD.style.display = 'block';
         } else {
             alert('error');
             location.reload();

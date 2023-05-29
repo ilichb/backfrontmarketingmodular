@@ -59,8 +59,8 @@ $sectores = $dataBase->getSectorEconomico();
                 <h4>Agregar Categorias</h4>
                 <form id="agregar_categorias_form" >
                     <input type="hidden" name="tipo" value="guardar_categoria" id='tipo_categoria'>
-                    <label for="agregar_nombre_categoria">Nombre: </label>    
-                    <input type="text" name="agregar_nombre_categoria" id="agregar_nombre_categoria" placeholder="nombre de la categoria" />
+                    <label for="agregar_nombre_categoria" class="col-form-label">Nombre: </label>    
+                    <input type="text" class="form-control" name="agregar_nombre_categoria" id="agregar_nombre_categoria" placeholder="nombre de la categoria" />
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit" class="btn btn-outline-dark">Agregar</button>
@@ -72,8 +72,8 @@ $sectores = $dataBase->getSectorEconomico();
                 <form id="editar_categoria_form" >
                     <input type="hidden" name="editar_id_categoria" id="editar_id_categoria" />
                     <input type="hidden" name="caso" value="editar_categoria" />
-                    <label for="editar_nombre_categoria">Nombre: </label>
-                    <input type="text" name="editar_categoria_nombre" id="editar_categoria_nombre" />
+                    <label for="editar_nombre_categoria" class="col-form-label">Nombre: </label>
+                    <input type="text" class="form-control" name="editar_categoria_nombre" id="editar_categoria_nombre" />
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit" class="btn btn-outline-dark">Actualizar</button>
@@ -116,18 +116,18 @@ $sectores = $dataBase->getSectorEconomico();
                 <h4>Agregar Servicios</h4>
                 <form id="agregar_servicio_form" >
                     <input type="hidden" name="tipo" value="guardar_servicio" id='tipo_servicios'>
-                    <label for="agregar_nombre_servicio">Nombre: </label>    
-                    <input type="text" name="agregar_nombre_servicio" id="agregar_nombre_servicio" />
-                    <label for="agregar_categoria_servicio" >Categoria: </label>
-                    <label for="agregar_estrategia_servicio">Estrategia: </label>
-                    <select name="agregar_estrategia_servicio" id="agregar_estrategia_servicio">
+                    <label for="agregar_nombre_servicio" class="col-form-label">Nombre: </label>    
+                    <input type="text" class="form-control" name="agregar_nombre_servicio" id="agregar_nombre_servicio" />
+                    <label for="agregar_estrategia_servicio" class="col-form-label">Estrategia: </label>
+                    <select name="agregar_estrategia_servicio" class="form-select" id="agregar_estrategia_servicio">
                         <option value=""> -- </option>
                         <option value="branding">Branding</option>
                         <option value="organicGrowth">Organic Growth</option>
                         <option value="totalGrowth">Total Growth</option>
                         <option value="levelSEO"> Level SEO</option>
                     </select>
-                    <select name="agregar_categoria_servicio" id="agregar_categoria_servicio">
+                    <label for="agregar_categoria_servicio" class="col-form-label" >Categoria: </label>
+                    <select name="agregar_categoria_servicio" class="form-select" id="agregar_categoria_servicio">
                         <option value=""> -- </option>
                         <?php foreach($categoria_servicios as $categories): ?>
                         <option value="<?php
@@ -145,18 +145,18 @@ $sectores = $dataBase->getSectorEconomico();
                 <form id="editar_servicio_form" >
                     <input type="hidden" name="editar_id_servicio" id="editar_id_servicio" />
                     <input type="hidden" name="caso" value="editar_servicio" />
-                    <label for="editar_nombre_servicio">Nombre: </label>
-                    <input type="text" name="editar_servicio_nombre" id="editar_servicio_nombre" />
-                    <label for="editar_servicio_estrategia">Estrategia: </label>
-                    <select name="editar_servicio_estrategia" id="editar_servicio_estrategia">
+                    <label for="editar_nombre_servicio" class="col-form-label">Nombre: </label>
+                    <input type="text" class="form-control" name="editar_servicio_nombre" id="editar_servicio_nombre" />
+                    <label for="editar_servicio_estrategia" class="col-form-label">Estrategia: </label>
+                    <select name="editar_servicio_estrategia"  class="form-select" id="editar_servicio_estrategia">
                         <option value=""> -- </option>
                         <option value="branding">Branding</option>
                         <option value="organicGrowth">Organic Growth</option>
                         <option value="totalGrowth">Total Growth</option>
                         <option value="levelSEO"> Level SEO</option>
                     </select>
-                    <label for="editar_categoria_servicio" >Categoria: </label>
-                    <select name="editar_categoria_servicio" id="editar_categoria_servicio">
+                    <label for="editar_categoria_servicio" class="col-form-label" >Categoria: </label>
+                    <select name="editar_categoria_servicio" class="form-select" id="editar_categoria_servicio">
                         <option value=""> -- </option>
                         <?php foreach($categoria_servicios as $categories): ?>
                         <option value="<?php
@@ -192,7 +192,7 @@ $sectores = $dataBase->getSectorEconomico();
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $micro->nombre; ?></td>
-                                <td><?php echo $micro->valor_impacto; ?> %</td>
+                                <td><?php echo round($micro->valor_impacto, 2); ?> %</td>
                                 <td><?php echo $micro->valor_de_costo; ?> EUR</td>
                                 <td><?php echo $micro->valor_de_ingreso; ?> EUR</td>
                                 <td><?php echo $micro->gasto_publicidad; ?> EUR</td>
@@ -211,18 +211,18 @@ $sectores = $dataBase->getSectorEconomico();
                 <h4>Agregar Microervicios</h4>
                 <form id="agregar_microservicio_form" >
                     <input type="hidden" name="tipo" value="guardar_microservicio" id='tipo_microservicios'>
-                    <label for="agregar_nombre_microservicio">Nombre: </label>    
-                    <input type="text" name="agregar_nombre_microservicio" id="agregar_nombre_microservicio" />
-                    <label for="agregar_valor_impacto_microservicio">Valor de Impacto: </label>    
-                    <input type="number" name="agregar_valor_impacto_microservicio" id="agregar_valor_impacto_microservicio" step="0.01" />
-                    <label for="agregar_valor_costo_microservicio">Valor de costo: </label>    
-                    <input type="number" name="agregar_valor_costo_microservicio" id="agregar_valor_costo_microservicio" step="0.01"/>
-                    <label for="agregar_valor_ingreso_microservicio">Valor de Ingresos: </label>    
-                    <input type="number" name="agregar_valor_ingreso_microservicio" id="agregar_valor_ingreso_microservicio" step="0.01"/>
-                    <label for="agregar_gasto_publicidad_microservicio">Gasto de publicidad: </label>    
-                    <input type="number" name="agregar_gasto_publicidad_microservicio" id="agregar_gasto_publicidad_microservicio" step="0.01"/>
-                    <label for="agregar_servicio_microservicio" >Servicios: </label>
-                    <select name="agregar_servicio_microservicio" id="agregar_servicio_microservicio">
+                    <label for="agregar_nombre_microservicio" class="col-form-label">Nombre: </label>    
+                    <input type="text" class="form-control" name="agregar_nombre_microservicio" id="agregar_nombre_microservicio" />
+                    <label for="agregar_valor_impacto_microservicio" class="col-form-label">Valor de Impacto: </label>    
+                    <input type="number" class="form-control" name="agregar_valor_impacto_microservicio" id="agregar_valor_impacto_microservicio" step="0.01" />
+                    <label for="agregar_valor_costo_microservicio" class="col-form-label">Valor de costo: </label>    
+                    <input type="number" class="form-control"  name="agregar_valor_costo_microservicio" id="agregar_valor_costo_microservicio" step="0.01"/>
+                    <label for="agregar_valor_ingreso_microservicio" class="col-form-label">Valor de Ingresos: </label>    
+                    <input type="number" class="form-control" name="agregar_valor_ingreso_microservicio" id="agregar_valor_ingreso_microservicio" step="0.01"/>
+                    <label for="agregar_gasto_publicidad_microservicio" class="col-form-label">Gasto de publicidad: </label>    
+                    <input type="number" class="form-control" name="agregar_gasto_publicidad_microservicio" id="agregar_gasto_publicidad_microservicio" step="0.01"/>
+                    <label for="agregar_servicio_microservicio" class="col-form-label" >Servicios: </label>
+                    <select name="agregar_servicio_microservicio" class="form-select" id="agregar_servicio_microservicio">
                         <option value=""> -- </option>
                         <?php foreach($servicios as $serv): ?>
                         <option value="<?php
@@ -240,18 +240,18 @@ $sectores = $dataBase->getSectorEconomico();
                 <form id="editar_microservicio_form" >
                     <input type="hidden" name="editar_id_microservicio" id="editar_id_microservicio" />
                     <input type="hidden" name="caso" value="editar_microservicio" />
-                    <label for="editar_nombre_microservicio">Nombre: </label>    
-                    <input type="text" name="editar_nombre_microservicio" id="editar_nombre_microservicio" />
-                    <label for="editar_valor_impacto_microservicio">Valor de Impacto: </label>    
-                    <input type="number" name="editar_valor_impacto_microservicio" id="editar_valor_impacto_microservicio" step="0.01"/>
-                    <label for="editar_valor_costo_microservicio">Valor de costo: </label>    
-                    <input type="number" name="editar_valor_costo_microservicio" id="editar_valor_costo_microservicio" step="0.01"/>
-                    <label for="editar_valor_ingreso_microservicio">Valor de Ingresos: </label>    
-                    <input type="number" name="editar_valor_ingreso_microservicio" id="editar_valor_ingreso_microservicio" step="0.01"/>
-                    <label for="editar_gasto_publicidad_microservicio">Gasto de Publicidad: </label>    
-                    <input type="number" name="editar_gasto_publicidad_microservicio" id="editar_gasto_publicidad_microservicio" step="0.01"/>
+                    <label for="editar_nombre_microservicio" class="col-form-label">Nombre: </label>    
+                    <input type="text" class="form-control" name="editar_nombre_microservicio" id="editar_nombre_microservicio" />
+                    <label for="editar_valor_impacto_microservicio" class="col-form-label">Valor de Impacto: </label>    
+                    <input type="number" class="form-control" name="editar_valor_impacto_microservicio" id="editar_valor_impacto_microservicio" step="0.01"/>
+                    <label for="editar_valor_costo_microservicio" class="col-form-label">Valor de costo: </label>    
+                    <input type="number" class="form-control" name="editar_valor_costo_microservicio" id="editar_valor_costo_microservicio" step="0.01"/>
+                    <label for="editar_valor_ingreso_microservicio" class="col-form-label">Valor de Ingresos: </label>    
+                    <input type="number" class="form-control" name="editar_valor_ingreso_microservicio" id="editar_valor_ingreso_microservicio" step="0.01"/>
+                    <label for="editar_gasto_publicidad_microservicio" class="col-form-label">Gasto de Publicidad: </label>    
+                    <input type="number" name="editar_gasto_publicidad_microservicio" class="form-control" id="editar_gasto_publicidad_microservicio" step="0.01"/>
                     <label for="editar_servicio_microservicio" >Servicios: </label>
-                    <select name="editar_servicio_microservicio" id="editar_servicio_microservicio">
+                    <select name="editar_servicio_microservicio" class="form-select" id="editar_servicio_microservicio">
                         <option value=""> -- </option>
                         <?php foreach($servicios as $serv): ?>
                         <option value="<?php
@@ -307,15 +307,15 @@ $sectores = $dataBase->getSectorEconomico();
                 <h4>Agregar Sector Economico</h4>
                 <form id="agregar_sector_form" >
                     <input type="hidden" name="tipo" value="guardar_sector" id='tipo_sector'>
-                    <label for="agregar_nombre_sector">Nombre: </label>    
-                    <input type="text" name="agregar_nombre_sector" id="agregar_nombre_sector" />
-                    <label for="agregar_recomendaciones_sector">Recomendaciones: </label>      
-                    <textarea name="agregar_recomendaciones_sector" id="agregar_recomendaciones_sector" rows="5" cols="60"></textarea>
-                    <label for="agregar_microservicio_sector" >Microservicios: </label>
+                    <label for="agregar_nombre_sector" class="col-form-label">Nombre: </label>    
+                    <input type="text" class="form-control" name="agregar_nombre_sector" id="agregar_nombre_sector" />
+                    <label for="agregar_recomendaciones_sector" class="col-form-label">Recomendaciones: </label>      
+                    <textarea name="agregar_recomendaciones_sector" class="form-control" id="agregar_recomendaciones_sector" rows="5" cols="60"></textarea>
+                    <label for="agregar_microservicio_sector" class="col-form-label" >Microservicios: </label>
                     <?php foreach ($microservicios as $ms): ?>
-                        <div>
-                            <label for="microservios-<?php echo $ms->id; ?>"><?php echo $ms->nombre; ?></label>
-                            <input type="checkbox" name="microservicios_sector" id="microservios-<?php echo $ms->id?>" value="<?php echo $ms->id ?>">
+                        <div class="form-check">
+                            <label for="microservios-<?php echo $ms->id; ?>" class="form-check-label"><?php echo $ms->nombre; ?></label>
+                            <input type="checkbox" class="form-check-input" name="microservicios_sector" id="microservios-<?php echo $ms->id?>" value="<?php echo $ms->id ?>">
                         </div>
                         <?php endforeach ?>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
@@ -329,15 +329,15 @@ $sectores = $dataBase->getSectorEconomico();
                 <form id="editar_sector_form" >
                     <input type="hidden" name="editar_id_sector" id="editar_id_sector" />
                     <input type="hidden" name="caso" value="editar_sector" />
-                    <label for="editar_nombre_sector">Nombre: </label>    
-                    <input type="text" name="editar_nombre_sector" id="editar_nombre_sector" />
-                    <label for="editar_recomendaciones_sector">Recomendaciones: </label>      
-                    <textarea name="editar_recomendaciones_sector" id="editar_recomendaciones_sector" rows="5" cols="60"></textarea>
-                    <label for="editar_microservicio_sector" >Microservicios: </label>
+                    <label for="editar_nombre_sector" class="col-form-label">Nombre: </label>    
+                    <input type="text" name="editar_nombre_sector" class="form-control" id="editar_nombre_sector" />
+                    <label for="editar_recomendaciones_sector" class="col-form-label">Recomendaciones: </label>      
+                    <textarea name="editar_recomendaciones_sector" class="form-control" id="editar_recomendaciones_sector" rows="5" cols="60"></textarea>
+                    <label for="editar_microservicio_sector" class="col-form-label" >Microservicios: </label>
                     <?php foreach ($microservicios as $ms): ?>
-                        <div>
-                            <label for="microservios-<?php echo $ms->id; ?>-editar"><?php echo $ms->nombre; ?></label>
-                            <input type="checkbox" name="microservicios_sector_editar" id="microservicios-<?php echo $ms->id; ?>-editar" value="<?php echo $ms->id; ?>">
+                        <div class="form-check">
+                            <label for="microservios-<?php echo $ms->id; ?>-editar" class="form-check-label"><?php echo $ms->nombre; ?></label>
+                            <input type="checkbox" class="form-check-input" name="microservicios_sector_editar" id="microservicios-<?php echo $ms->id; ?>-editar" value="<?php echo $ms->id; ?>">
                         </div>
                     <?php endforeach ?>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
