@@ -195,20 +195,15 @@ class Algoritmo
         if($resultCosto === 0){
             throw new Exception("Error Processing Request");
         } else {
-            $roi = ($totalRetorno - $resultCosto) / $resultCosto;
+            $roi = ((($totalRetorno - $resultCosto) / $resultCosto) + $this->ROI) / 2;
 
             $aumento = $this->expenses * ($roi / 100);
 
             $ganancias = $this->expenses + $aumento;
 
             $result = 0;
-
-            if($ganancias < $this->expenses){
-                $result = round($ganancias - $this->expenses, 2);
-            } else {
-                $result = round($ganancias, 2);
-            }
-
+           
+            $result = round($ganancias - $this->expenses, 2);
             
             return round($result, 2);
         }

@@ -230,7 +230,7 @@ use Joomla\CMS\Session\Session;
                             $dataBase->executeEditar($data, $tabla);
                             break;
                         
-                        case 'usuario':
+                        case 'editar_usuario':
                             $data = array(
                                 'id' => $input->get('editar_id_usuario', 0, 'number'),
                                 'estado' => $input->get('editar_estado_usuario', '', 'string')
@@ -281,7 +281,7 @@ use Joomla\CMS\Session\Session;
                             $dataBase->executeEliminar($data, $tabla);
                             break;
                         
-                        case 'usuario':
+                        case 'eliminar_usuario':
                             $data = $input->get('eliminar_id_usuario', 0, 'number');
 
                             $tabla = 'usuario';
@@ -357,16 +357,16 @@ use Joomla\CMS\Session\Session;
 
                                     $tabla = 'usuario';
 
-                                $data['microservicios'] = $datosMicroservicios;
+                                $data['microservicios'] = json_encode($datosMicroservicios);
                                 $data['branding'] = $resultados['branding'];
                                 $data['organicGrowth'] = $resultados['organicGrowth'];
                                 $data['totalGrowth'] = $resultados['totalGrowth'];
-                                $data['levelSEO'] = $resultados['levelSEO'];
-                                $data['pais'] = $resultados['country'];
+                                $data['levelSEO'] = $resultados['seoLevel'];
+                                $data['pais'] = $resultados['country'][0];
                                 $data['ganancias'] = $resultados['projectedEarnings'];  
                                 $data['ventasTrimestr'] = $resultados['sales'];                              
                                 $data['sector'] = $sector;
-                                
+                            
                                 $dataBase->executeGuardar($data, $tabla, $method);
 
                                 $this->session->clear();
@@ -379,7 +379,7 @@ use Joomla\CMS\Session\Session;
                             }
                         }
                     }
-                    $result = array($dataResponse, $this->session->set('dataUser'));     
+                    $result = array($dataResponse);     
                     return json_encode($result);
                 
                     exit;

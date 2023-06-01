@@ -70,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos guardados');
             location.reload();
-            categorias.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -110,7 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos Editados Correctamente');
             location.reload();
-            categorias.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -128,8 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
             //datos de cada uno de los botones
             const id = e.target.getAttribute('data-id');
 
-            console.log(id);
-
             const formData = new FormData();
             formData.append('accion', 'eliminar');
             formData.append('caso', 'eliminar_categoria');
@@ -146,7 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Datos Eliminados Correctamente');
                 location.reload();
             } else {
-                console.log(jsonResponse);
                 alert('error');
                 location.reload();
             }
@@ -168,10 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const jsonResponse = await response.json();
         if(jsonResponse.success){
-            console.log(jsonResponse)
             alert('Datos guardados');
             location.reload();
-            servicios.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -215,7 +208,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos Editados Correctamente');
             location.reload();
-            servicios.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -232,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //datos de cada uno de los botones
             const id = e.target.getAttribute('data-id');
 
-            const formData = new FormData(e.target);
+            const formData = new FormData();
             formData.append('accion', 'eliminar');
             formData.append('caso', 'eliminar_servicio');
             formData.append('eliminar_id_servicio', id);
@@ -269,12 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const jsonResponse = await response.json();
         if(jsonResponse.success){
-            console.log(jsonResponse)
             alert('Datos guardados');
             location.reload();
-            microserviciosD.style.display = 'block';
         } else {
-            console.log(jsonResponse)
             alert('error');
             location.reload();
         }
@@ -323,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(jsonResponse.success){
             alert('Datos Editados Correctamente');
             location.reload();
-            microserviciosD.style.display = 'block';
         } else {
             alert('error');
             location.reload();
@@ -340,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //datos de cada uno de los botones
             const id = e.target.getAttribute('data-id');
 
-            const formData = new FormData(e.target);
+            const formData = new FormData();
             formData.append('accion', 'eliminar');
             formData.append('caso', 'eliminar_microservicio');
             formData.append('eliminar_id_microservicio', id);
@@ -464,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //datos de cada uno de los botones
             const id = e.target.getAttribute('data-id');
 
-            const formData = new FormData(e.target);
+            const formData = new FormData();
             formData.append('accion', 'eliminar');
             formData.append('caso', 'eliminar_sector');
             formData.append('eliminar_id_sector', id);
@@ -492,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const editarUsuariosBotones = document.querySelectorAll('#datos_editar_usuario');
     editarUsuariosBotones.forEach(editarBoton => {
         editarBoton.addEventListener('click', (e) => {
+            e.preventDefault();
             //datos de cada uno de los botones
             const id = e.target.getAttribute('data-id');
             const estado = e.target.getAttribute('data-estado')
@@ -507,6 +496,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(e.target);
         formData.append('accion', 'editar');
+
+        console.log(formData.entries())
 
         const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
             method:'POST', //utilizado por compatibilidad con FormData
@@ -534,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
             //datos de cada uno de los botones
             const id = e.target.getAttribute('data-id');
 
-            const formData = new FormData(e.target);
+            const formData = new FormData();
             formData.append('accion', 'eliminar');
             formData.append('caso', 'eliminar_usuario');
             formData.append('eliminar_id_usuario', id);

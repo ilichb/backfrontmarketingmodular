@@ -298,7 +298,14 @@ $usuarios = $dataBase->getUsuarios();
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $sector_data['nombre']; ?></td>
-                                <td><?php  echo $sector_data['recomendaciones']; ?></td>
+                                <td>
+                                    <?php $recomendaciones = explode(',', $sector_data['recomendaciones']);
+                                    foreach($recomendaciones as $recomendacion): ?>
+                                        <ul>
+                                            <li><?php echo $recomendacion ?></li>
+                                        </ul>
+                                    <?php endforeach?>
+                                </td>
                                 <td>
                                     <ul>
                                     <?php foreach ($sector_data['microservicios'] as $microservicio): ?>
@@ -309,11 +316,13 @@ $usuarios = $dataBase->getUsuarios();
                                 </td>
                                 <td>
                                     <button type="button" id="datos_editar_sector" class="btn btn-outline-light" data-id='<?php echo $sector_data['id']; ?>' data-nombre='<?php echo $sector_data['nombre']; ?>' data-recomendaciones='<?php echo $sector_data['recomendaciones']; ?>' data-microservicios='<?php  foreach ($sector_data['microservicios'] as $micro): echo $micro['id'];?>,<?php endforeach; ?>'>Edit</button>
-                                    <?php endforeach; ?>
+                                    
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-outline-light" id="datos_eliminar_sector" data-id='<?php echo $sector_data['id']; ?>' >Eliminar</button>
+                                    <?php endforeach; ?>                               
                                 </td>
+
                             </tr>      
                         </tbody>
                     </table>
@@ -326,7 +335,7 @@ $usuarios = $dataBase->getUsuarios();
                     <input type="hidden" name="tipo" value="guardar_sector" id='tipo_sector'>
                     <label for="agregar_nombre_sector" class="col-form-label">Nombre: </label>    
                     <input type="text" class="form-control" name="agregar_nombre_sector" id="agregar_nombre_sector" />
-                    <label for="agregar_recomendaciones_sector" class="col-form-label">Recomendaciones: </label>      
+                    <label for="agregar_recomendaciones_sector" class="col-form-label">Recomendaciones (separadas por comas ','): </label>      
                     <textarea name="agregar_recomendaciones_sector" class="form-control" id="agregar_recomendaciones_sector" rows="5" cols="60"></textarea>
                     <label for="agregar_microservicio_sector" class="col-form-label" >Microservicios: </label>
                     <?php foreach ($microservicios as $ms): ?>
@@ -379,37 +388,44 @@ $usuarios = $dataBase->getUsuarios();
                                 <th>Sector Comercial</th>
                                 <th>Resultados Algoritmo</th>
                                 <th>Microservicios Seleccionados</th>
+                                <th>Estado</th>
                                 <th>Editar</th>
                                 <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php $contador = 1;  ?>
-                            <?php foreach ($usuarios as $usuario): if($usuario['eliminado'] === 'no'){?>
+                            <?php foreach ($usuarios as $usuario): if($usuario->eliminado === 'no'){?>
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
-                                <td><?php echo $usuario['nombre']; ?></td>
-                                <td><?php  echo $usuario['email']; ?></td>
-                                <td><?php  echo $usuario['telefono']; ?></td>
-                                <td><?php  echo $usuario['pais']; ?></td>
-                                <td><?php  echo $usuario['empresa']; ?></td>
-                                <td><?php  echo $usuario['sector']; ?></td>
+                                <td><?php echo $usuario->nombre; ?></td>
+                                <td><?php  echo $usuario->email; ?></td>
+                                <td><?php  echo $usuario->telefono; ?></td>
+                                <td><?php  echo $usuario->pais; ?></td>
+                                <td><?php  echo $usuario->empresa; ?></td>
+                                <td><?php  echo $usuario->sector; ?></td>
                                 <td>
                                     <ul>
-                                        <li>Branding: <?php  echo $usuario['branding']; ?>%</li>
-                                        <li>Crecimiento Organico: <?php  echo $usuario['organicGrowth']; ?>%</li>
-                                        <li>Crecimiento total: <?php  echo $usuario['totalGrowth']; ?>%</li>
-                                        <li>Nivel de SEO: <?php  echo $usuario['levelSEO']; ?>%</li>
-                                        <li>Ventas primer trimestre: <?php  echo $usuario['ventasTrimestr']; ?>%</li>
-                                        <li>Ganancias proyectadas: <?php  echo $usuario['ganancias']; ?></li>
+                                        <li>Branding: <?php  echo $usuario->branding; ?>%</li>
+                                        <li>Crecimiento Organico: <?php  echo $usuario->organicGrowth; ?>%</li>
+                                        <li>Crecimiento total: <?php  echo $usuario->totalGrowth; ?>%</li>
+                                        <li>Nivel de SEO: <?php  echo $usuario->levelSEO; ?>%</li>
+                                        <li>Ventas primer trimestre: <?php  echo $usuario->ventasTrimestr; ?>%</li>
+                                        <li>Ganancias proyectadas: <?php  echo $usuario->ganancias; ?></li>
                                     </ul>
                                 </td>
-                                <td><?php echo $usuario['microservicios']; ?></td>
+                                <td><?php foreach (json_decode($usuario->microservicios) as $microservicio):?>
+                                    <ul>
+                                        <li><?php echo $microservicio; ?></li>
+                                    </ul>
+                                    <?php endforeach; ?>
+                                </td>
+                                <td><?php  echo $usuario->estado; ?></td>
                                 <td>
-                                    <button type="button" id="datos_editar_usuario" class="btn btn-outline-light" data-id='<?php echo $usuario['id']; ?>' data-estado='<?php echo $usuario['estado']; ?>' >Editar Estado</button>
+                                    <button type="button" id="datos_editar_usuario" class="btn btn-outline-light" data-id='<?php echo $usuario->id; ?>' data-estado='<?php echo $usuario->estado; ?>' >Editar Estado</button>
                                 </td>
                                 <td>
-                                    <button type="button" id="datos_eliminar_usuario" class="btn btn-outline-light" data-id='<?php echo $usuario['id']; ?>' >Eliminar</button>
+                                    <button type="button" id="datos_eliminar_usuario" class="btn btn-outline-light" data-id='<?php echo $usuario->id; ?>' >Eliminar</button>
                                 </td>
                             </tr>
                             <?php }endforeach; ?>
@@ -429,7 +445,7 @@ $usuarios = $dataBase->getUsuarios();
                         <option value="">--</option>
                         <option value="atendido">Atendido</option>
                         <option value="pendiente">Pendiente</option>
-                        <option value="noAtender">No Atendido</option>
+                        <option value="noAtendido">No Atendido</option>
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>

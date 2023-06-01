@@ -321,6 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 })
                     .then(response => {
+                        console.log(response.json())
                         errorMessageSignup.innerHTML = '';
                         signupForm.classList.add('su-hidden');
                         signupForm.classList.remove('su-visible');
