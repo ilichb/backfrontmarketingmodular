@@ -13,6 +13,7 @@ $categoria_servicios = $dataBase->getCategoriaServicios();
 $servicios = $dataBase->getServicios();
 $microservicios = $dataBase->getMicroservicios();
 $sectores = $dataBase->getSectorEconomico();
+$usuarios = $dataBase->getUsuarios();
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +37,8 @@ $sectores = $dataBase->getSectorEconomico();
                             <tr>
                                 <th>#</th>
                                 <th>Nombre</th>
-                                <th>Acciones</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,7 +48,10 @@ $sectores = $dataBase->getSectorEconomico();
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $categoria->nombre; ?></td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-light" id="datos_editar_categorias" data-id='<?php echo $categoria->id; ?>' data-nombre='<?php echo $categoria->nombre; ?>' >Edit</button>
+                                    <button type="button" class="btn btn-outline-light" id="datos_editar_categorias" data-id='<?php echo $categoria->id; ?>' data-nombre='<?php echo $categoria->nombre; ?>' >Editar</button>
+                                </td>
+                                <td>
+                                <button type="button" class="btn btn-outline-light" id="datos_eliminar_categorias" data-id='<?php echo $categoria->id; ?>' >Eliminar</button>
                                 </td>
                             </tr>      
                             <?php endforeach; ?>
@@ -91,7 +96,8 @@ $sectores = $dataBase->getSectorEconomico();
                                 <th>Nombre</th>
                                 <th>Estrategia</th>
                                 <th>Categoria</th>
-                                <th>Acciones</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -104,6 +110,9 @@ $sectores = $dataBase->getSectorEconomico();
                                 <td><?php echo $ser->categoria; ?></td>
                                 <td>
                                     <button type="button" class="btn btn-outline-light" id="datos_editar_servicios" data-id='<?php echo $ser->id; ?>' data-nombre='<?php echo $ser->nombre; ?>' data-estrategia='<?php echo $ser->estrategia; ?>' data-categoria='<?php echo $ser->categoria_id ?>'>Edit</button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-light" id="datos_eliminar_servicios" data-id='<?php echo $ser->id; ?>' >Eliminar</button>
                                 </td>
                             </tr>      
                             <?php endforeach; ?>
@@ -183,7 +192,8 @@ $sectores = $dataBase->getSectorEconomico();
                                 <th>Valor de Ingreso</th>
                                 <th>Gasto de Publicidad</th>
                                 <th>Servicio</th>
-                                <th>Acciones</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -199,6 +209,9 @@ $sectores = $dataBase->getSectorEconomico();
                                 <td><?php echo $micro->servicio; ?></td>
                                 <td>
                                     <button type="button" id="datos_editar_microservicios" class="btn btn-outline-light" data-id='<?php echo $micro->id; ?>' data-nombre='<?php echo $micro->nombre; ?>' data-valor-impacto='<?php echo $micro->valor_impacto; ?>' data-valor-costo='<?php echo $micro->valor_de_costo; ?>' data-valor-ingreso='<?php echo $micro->valor_de_ingreso; ?>' data-gasto-publicidad='<?php echo $micro->gasto_publicidad; ?>' data-servicio='<?php echo $micro->servicio_id; ?>'>Edit</button>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-light" id="datos_eliminar_microservicios" data-id='<?php echo $micro->id; ?>' >Eliminar</button>
                                 </td>	
                             </tr>      
                             <?php endforeach; ?>
@@ -275,7 +288,8 @@ $sectores = $dataBase->getSectorEconomico();
                                 <th>Nombre</th>
                                 <th>Recomendaciones</th>
                                 <th>Microservicios</th>
-                                <th>Acciones</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -296,6 +310,9 @@ $sectores = $dataBase->getSectorEconomico();
                                 <td>
                                     <button type="button" id="datos_editar_sector" class="btn btn-outline-light" data-id='<?php echo $sector_data['id']; ?>' data-nombre='<?php echo $sector_data['nombre']; ?>' data-recomendaciones='<?php echo $sector_data['recomendaciones']; ?>' data-microservicios='<?php  foreach ($sector_data['microservicios'] as $micro): echo $micro['id'];?>,<?php endforeach; ?>'>Edit</button>
                                     <?php endforeach; ?>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-light" id="datos_eliminar_sector" data-id='<?php echo $sector_data['id']; ?>' >Eliminar</button>
                                 </td>
                             </tr>      
                         </tbody>
@@ -346,12 +363,86 @@ $sectores = $dataBase->getSectorEconomico();
                 </form>
             </div>
         </section>
+        <section id="usuario" style="display: none;" >
+            <div id="mostrar_usuario">
+                <h3>Usuarios: </h3>
+                <div id="usuario_tabla">
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Telefono</th>
+                                <th>Pais</th>
+                                <th>Empresa</th>
+                                <th>Sector Comercial</th>
+                                <th>Resultados Algoritmo</th>
+                                <th>Microservicios Seleccionados</th>
+                                <th>Editar</th>
+                                <th>Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $contador = 1;  ?>
+                            <?php foreach ($usuarios as $usuario): if($usuario['eliminado'] === 'no'){?>
+                            <tr>
+                                <td scope='row' > <?php echo $contador++;?></td>
+                                <td><?php echo $usuario['nombre']; ?></td>
+                                <td><?php  echo $usuario['email']; ?></td>
+                                <td><?php  echo $usuario['telefono']; ?></td>
+                                <td><?php  echo $usuario['pais']; ?></td>
+                                <td><?php  echo $usuario['empresa']; ?></td>
+                                <td><?php  echo $usuario['sector']; ?></td>
+                                <td>
+                                    <ul>
+                                        <li>Branding: <?php  echo $usuario['branding']; ?>%</li>
+                                        <li>Crecimiento Organico: <?php  echo $usuario['organicGrowth']; ?>%</li>
+                                        <li>Crecimiento total: <?php  echo $usuario['totalGrowth']; ?>%</li>
+                                        <li>Nivel de SEO: <?php  echo $usuario['levelSEO']; ?>%</li>
+                                        <li>Ventas primer trimestre: <?php  echo $usuario['ventasTrimestr']; ?>%</li>
+                                        <li>Ganancias proyectadas: <?php  echo $usuario['ganancias']; ?></li>
+                                    </ul>
+                                </td>
+                                <td><?php echo $usuario['microservicios']; ?></td>
+                                <td>
+                                    <button type="button" id="datos_editar_usuario" class="btn btn-outline-light" data-id='<?php echo $usuario['id']; ?>' data-estado='<?php echo $usuario['estado']; ?>' >Editar Estado</button>
+                                </td>
+                                <td>
+                                    <button type="button" id="datos_eliminar_usuario" class="btn btn-outline-light" data-id='<?php echo $usuario['id']; ?>' >Eliminar</button>
+                                </td>
+                            </tr>
+                            <?php }endforeach; ?>
 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="editar_estado_usuario">
+                <h4>Editar estado del usuario </h4>
+                <form id="editar_usuario_form" >
+                    <input type="hidden" name="editar_id_usuario" id="editar_id_usuario" />
+                    <input type="hidden" name="caso" value="editar_usuario" />
+                    <label for="editar_estado_usuario" class="col-form-label">Estado: </label>    
+                    <select name="editar_estado_usuario" id="editar_estado_usuario">
+                        <option value="">--</option>
+                        <option value="atendido">Atendido</option>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="noAtender">No Atendido</option>
+                    </select>
+                    <!-- input oculto para mejorar la seguridad con un Token CSRF-->
+                    <input type="hidden" name=<?php echo $token; ?> value="1"/>
+                    <button type="submit" class="btn btn-outline-dark">Editar estado</button>
+                </form>
+            </div>
+        </section>
         <section class="btn-group m-5" role="group">
-        <button type="button" id="btn_categorias" class="btn btn-outline-dark">Categorias</button>
-        <button type="button" id="btn_servicios" class="btn btn-outline-dark">Servicios</button>
-        <button type="button" id="btn_microservicios" class="btn btn-outline-dark">Microservicios</button>
-        <button type="button" id="btn_sector" class="btn btn-outline-dark">Sectores Economicos</button>
+            <button type="button" id="btn_categorias" class="btn btn-outline-dark">Categorias</button>
+            <button type="button" id="btn_servicios" class="btn btn-outline-dark">Servicios</button>
+            <button type="button" id="btn_microservicios" class="btn btn-outline-dark">Microservicios</button>
+            <button type="button" id="btn_sector" class="btn btn-outline-dark">Sectores Economicos</button>
+            <button type="button" id="btn_usuario" class="btn btn-outline-dark">Usuarios</button>
         </section>
         
     </main>

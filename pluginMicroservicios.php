@@ -230,6 +230,65 @@ use Joomla\CMS\Session\Session;
                             $dataBase->executeEditar($data, $tabla);
                             break;
                         
+                        case 'usuario':
+                            $data = array(
+                                'id' => $input->get('editar_id_usuario', 0, 'number'),
+                                'estado' => $input->get('editar_estado_usuario', '', 'string')
+                            );
+
+                            $tabla = 'usuario';
+
+                            $dataBase->executeEditar($data, $tabla);
+                            break;
+                        
+                        default:
+                            break;
+                        }
+                    }
+                    
+                if($accion === 'eliminar'){
+                    $caso = $input->get('caso', '', 'cmd');
+
+                    switch ($caso) {
+                        case 'eliminar_categoria':
+                            $data = $input->get('eliminar_id_categoria', 0, 'number');
+                            
+                            $tabla = 'categoria_servicios';
+
+                            $dataBase->executeEliminar($data, $tabla);
+                            break;
+                        case 'eliminar_servicio':
+                            $data = $input->get('eliminar_id_servicio', 0, 'number');
+
+                            $tabla = 'servicios';
+
+                            $dataBase->executeEliminar($data, $tabla);
+                            break;
+                            
+                        case 'eliminar_microservicio':
+                            $data = $input->get('eliminar_id_microservicio', 0, 'number');
+            
+                            $tabla = 'microservicios';
+            
+                            $dataBase->executeEliminar($data, $tabla);
+                            break;
+
+                        case 'eliminar_sector':
+                            $data = $input->get('eliminar_id_sector', 0, 'number');
+                
+                            $tabla = 'sector_economico';
+
+                            $dataBase->executeEliminar($data, $tabla);
+                            break;
+                        
+                        case 'usuario':
+                            $data = $input->get('eliminar_id_usuario', 0, 'number');
+
+                            $tabla = 'usuario';
+
+                            $dataBase->executeEliminar($data, $tabla);
+                            break;
+                        
                         default:
                             break;
                         }
@@ -281,18 +340,36 @@ use Joomla\CMS\Session\Session;
                                 
                                 $this->session->set('dataUser', $dataResponse);
                                 $this->session->set('microserviciosUser', $microserviciosUser);
-
+                                $this->session->set('sector', $sectorEconomico);
                                 break;
 
                             case 'guardarDatos':
-                                    $name = $input->get('name', '', 'string');
-                                    $email = $input->get('email', '', 'string');
-                                    $phone = $input->get('phone', '', 'string');
-                                    $company = $input->get('company', '', 'string');
-                                    $datos = $this->session->get('dataUser');
-                                    $datosMicroservicios = $this->session->get('microserviciosUser');
 
-                                    
+                                $data = array( 
+                                    'nombre' => $name = $input->get('name', '', 'string'),
+                                    'email' => $email = $input->get('email', '', 'string'),
+                                    'telefono' => $phone = $input->get('phone', '', 'string'),
+                                    'empresa' => $company = $input->get('company', '', 'string')
+                                );
+                                    $resultados = $this->session->get('dataUser');
+                                    $datosMicroservicios = $this->session->get('microserviciosUser');
+                                    $sector = $this->session->get('sector');
+
+                                    $tabla = 'usuario';
+
+                                $data['microservicios'] = $datosMicroservicios;
+                                $data['branding'] = $resultados['branding'];
+                                $data['organicGrowth'] = $resultados['organicGrowth'];
+                                $data['totalGrowth'] = $resultados['totalGrowth'];
+                                $data['levelSEO'] = $resultados['levelSEO'];
+                                $data['pais'] = $resultados['country'];
+                                $data['ganancias'] = $resultados['projectedEarnings'];  
+                                $data['ventasTrimestr'] = $resultados['sales'];                              
+                                $data['sector'] = $sector;
+                                
+                                $dataBase->executeGuardar($data, $tabla, $method);
+
+                                $this->session->clear();
 
                                 break;
                                     

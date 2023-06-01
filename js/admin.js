@@ -3,7 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let categorias = document.getElementById('categorias');
     let servicios = document.getElementById('servicios');
     let microserviciosD = document.getElementById('microservicios');
-    let sector = document.getElementById('sector');    
+    let sector = document.getElementById('sector');
+    let usuario = document.getElementById('usuario');
 
     //funcionalidad de los botones
     document.getElementById('btn_categorias').addEventListener('click', () => {
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             servicios.style.display = 'none';
             microserviciosD.style.display = 'none';
             sector.style.display = 'none';
+            usuario.style.display = 'none';
         }
     });
     document.getElementById('btn_servicios').addEventListener('click', () => {
@@ -20,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             categorias.style.display = 'none';
             microserviciosD.style.display = 'none';
             sector.style.display = 'none';
+            usuario.style.display = 'none';
         }
     });
     document.getElementById('btn_microservicios').addEventListener('click', () => {
@@ -28,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
             categorias.style.display = 'none';
             servicios.style.display = 'none';
             sector.style.display = 'none';
+            usuario.style.display = 'none';
         } 
     });
     document.getElementById('btn_sector').addEventListener('click', () => {
@@ -36,7 +40,16 @@ document.addEventListener('DOMContentLoaded', () => {
             servicios.style.display = 'none';
             categorias.style.display = 'none';
             microserviciosD.style.display = 'none';
-            
+            usuario.style.display = 'none';
+        }
+    });
+    document.getElementById('btn_usuario').addEventListener('click', () => {
+        if(usuario.style.display === 'none'){
+            usuario.style.display = 'block';
+            servicios.style.display = 'none';
+            categorias.style.display = 'none';
+            microserviciosD.style.display = 'none';
+            sector.style.display = 'none';
         }
     });
 
@@ -102,6 +115,42 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('error');
             location.reload();
         }
+    });
+
+
+    //eliminar categorias
+    //obteniendo datos de botones en un array
+    const eliminarCategoriasBotones = document.querySelectorAll('#datos_eliminar_categorias');
+    eliminarCategoriasBotones.forEach(eliminarBoton => {
+        eliminarBoton.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            //datos de cada uno de los botones
+            const id = e.target.getAttribute('data-id');
+
+            console.log(id);
+
+            const formData = new FormData();
+            formData.append('accion', 'eliminar');
+            formData.append('caso', 'eliminar_categoria');
+            formData.append('eliminar_id_categoria', id);
+
+            const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+                method:'POST', //utilizado por compatibilidad con FormData
+                body: formData
+            })
+            
+            const jsonResponse = await response.json();
+
+            if(jsonResponse.success){
+                alert('Datos Eliminados Correctamente');
+                location.reload();
+            } else {
+                console.log(jsonResponse);
+                alert('error');
+                location.reload();
+            }
+        })
     });
 
     //servicios agregar
@@ -171,6 +220,38 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('error');
             location.reload();
         }
+    });
+
+    //eliminar servicios
+    //obteniendo datos de botones en un array
+    const eliminarServiciosBotones = document.querySelectorAll('#datos_eliminar_servicios');
+    eliminarServiciosBotones.forEach(eliminarBoton => {
+        eliminarBoton.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            //datos de cada uno de los botones
+            const id = e.target.getAttribute('data-id');
+
+            const formData = new FormData(e.target);
+            formData.append('accion', 'eliminar');
+            formData.append('caso', 'eliminar_servicio');
+            formData.append('eliminar_id_servicio', id);
+
+            const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+                method:'POST', //utilizado por compatibilidad con FormData
+                body: formData
+            })
+            
+            const jsonResponse = await response.json();
+
+            if(jsonResponse.success){
+                alert('Datos Eliminados Correctamente');
+                location.reload();
+            } else {
+                alert('error');
+                location.reload();
+            }
+        })
     });
 
     //microservicios agregar
@@ -247,6 +328,38 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('error');
             location.reload();
         }
+    });
+
+    //eliminar microservicios
+    //obteniendo datos de botones en un array
+    const eliminarMicroserviciosBotones = document.querySelectorAll('#datos_eliminar_microservicios');
+    eliminarMicroserviciosBotones.forEach(eliminarBoton => {
+        eliminarBoton.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            //datos de cada uno de los botones
+            const id = e.target.getAttribute('data-id');
+
+            const formData = new FormData(e.target);
+            formData.append('accion', 'eliminar');
+            formData.append('caso', 'eliminar_microservicio');
+            formData.append('eliminar_id_microservicio', id);
+
+            const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+                method:'POST', //utilizado por compatibilidad con FormData
+                body: formData
+            })
+            
+            const jsonResponse = await response.json();
+
+            if(jsonResponse.success){
+                alert('Datos Eliminados Correctamente');
+                location.reload();
+            } else {
+                alert('error');
+                location.reload();
+            }
+        })
     });
 
     //sectores agregar
@@ -339,5 +452,107 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('error');
             location.reload();
         }
-    })
+    });
+
+    //eliminar sector
+    //obteniendo datos de botones en un array
+    const eliminarSectorBotones = document.querySelectorAll('#datos_eliminar_sector');
+    eliminarSectorBotones.forEach(eliminarBoton => {
+        eliminarBoton.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            //datos de cada uno de los botones
+            const id = e.target.getAttribute('data-id');
+
+            const formData = new FormData(e.target);
+            formData.append('accion', 'eliminar');
+            formData.append('caso', 'eliminar_sector');
+            formData.append('eliminar_id_sector', id);
+
+            const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+                method:'POST', //utilizado por compatibilidad con FormData
+                body: formData
+            })
+            
+            const jsonResponse = await response.json();
+
+            if(jsonResponse.success){
+                alert('Datos Eliminados Correctamente');
+                location.reload();
+            } else {
+                alert('error');
+                location.reload();
+            }
+        })
+    });
+
+    //Usuarios
+    //editar Usuarios
+    //obteniendo datos de botones en un array
+    const editarUsuariosBotones = document.querySelectorAll('#datos_editar_usuario');
+    editarUsuariosBotones.forEach(editarBoton => {
+        editarBoton.addEventListener('click', (e) => {
+            //datos de cada uno de los botones
+            const id = e.target.getAttribute('data-id');
+            const estado = e.target.getAttribute('data-estado')
+            //llenamos el formulario de editar
+            document.getElementById('editar_id_usuario').value = id;
+            document.getElementById('editar_estado_usuario').value = estado;
+        });
+    });
+
+    const formUsuariosEditar = document.getElementById('editar_usuario_form')
+    formUsuariosEditar.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        formData.append('accion', 'editar');
+
+        const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+            method:'POST', //utilizado por compatibilidad con FormData
+            body: formData
+        })
+        
+        const jsonResponse = await response.json();
+
+        if(jsonResponse.success){
+            alert('Datos Editados Correctamente');
+            location.reload();
+        } else {
+            alert('error', jsonResponse.message);
+            location.reload();
+        }
+    });
+
+    //eliminar usuario
+    //obteniendo datos de botones en un array
+    const eliminarUsuarioBotones = document.querySelectorAll('#datos_eliminar_usuario');
+    eliminarUsuarioBotones.forEach(eliminarBoton => {
+        eliminarBoton.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            //datos de cada uno de los botones
+            const id = e.target.getAttribute('data-id');
+
+            const formData = new FormData(e.target);
+            formData.append('accion', 'eliminar');
+            formData.append('caso', 'eliminar_usuario');
+            formData.append('eliminar_id_usuario', id);
+
+            const response = await fetch('index.php?option=com_ajax&plugin=pluginMicroservicios&format=json', {
+                method:'POST', //utilizado por compatibilidad con FormData
+                body: formData
+            })
+            
+            const jsonResponse = await response.json();
+
+            if(jsonResponse.success){
+                alert('Datos Eliminados Correctamente');
+                location.reload();
+            } else {
+                alert('error');
+                location.reload();
+            }
+        })
+    });
 })
