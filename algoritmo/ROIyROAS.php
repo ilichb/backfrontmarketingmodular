@@ -14,7 +14,7 @@ class Roi {
         $this->gastoPublicidad = $gastoPublicidad;
     }
     
-    public function calculateROI() {
+    public function calculateROI(): float {
         if ($this->costo === 0) {
             throw new Exception("El costo no puede ser cero al calcular el ROI");
         }

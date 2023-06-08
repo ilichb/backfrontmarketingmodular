@@ -1,19 +1,14 @@
 <?php
-    $branding = 35;
-    $organic_growth = 18;
-    $total_growth = 50;
-    $seo_level = 42;
-    $sales = 80;
-    $projected_earnings = 120000;
-    $countries_list = json_encode(array('US', 'CA', 'MX', 'CO', 'ES'));
+defined('_JEXEC') or die('Acceso restringido');
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Andromeda</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="plugins/system/pluginMicroservicios/PlanModular-Front/styles.css" />
+    <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
     <div class="main">
@@ -164,6 +159,6 @@
         let sales;
         let projectedEarnings;
     </script>
-    <script src="plugins/system/pluginMicroservicios/PlanModular-Front/bundle.js"></script>
+    <script src="bundle.js"></script>
 </body>
 </html>

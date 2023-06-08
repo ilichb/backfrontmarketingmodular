@@ -22,7 +22,7 @@ $usuarios = $dataBase->getUsuarios();
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="plugins/system/pluginMicroservicios/PlanModular-Front/styles.css" />
+    <link rel="stylesheet" type="text/css" href="PlanModular-Front/styles.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <title>Servicios y Microservicios</title>
 </head>
@@ -51,7 +51,7 @@ $usuarios = $dataBase->getUsuarios();
                                     <button type="button" class="btn btn-outline-light" id="datos_editar_categorias" data-id='<?php echo $categoria->id; ?>' data-nombre='<?php echo $categoria->nombre; ?>' >Editar</button>
                                 </td>
                                 <td>
-                                <button type="button" class="btn btn-outline-light" id="datos_eliminar_categorias" data-id='<?php echo $categoria->id; ?>' >Eliminar</button>
+                                    <button type="button" class="btn btn-outline-light" id="datos_eliminar_categorias" data-id='<?php echo $categoria->id; ?>' >Eliminar</button>
                                 </td>
                             </tr>      
                             <?php endforeach; ?>
@@ -109,7 +109,7 @@ $usuarios = $dataBase->getUsuarios();
                                 <td><?php echo $ser->estrategia; ?></td>
                                 <td><?php echo $ser->categoria; ?></td>
                                 <td>
-                                    <button type="button" class="btn btn-outline-light" id="datos_editar_servicios" data-id='<?php echo $ser->id; ?>' data-nombre='<?php echo $ser->nombre; ?>' data-estrategia='<?php echo $ser->estrategia; ?>' data-categoria='<?php echo $ser->categoria_id ?>'>Edit</button>
+                                    <button type="button" class="btn btn-outline-light" id="datos_editar_servicios" data-id='<?php echo $ser->id; ?>' data-nombre='<?php echo $ser->nombre; ?>' data-estrategia='<?php echo $ser->estrategia; ?>' data-categoria='<?php echo $ser->categoria_id; ?>'>Edit</button>
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-outline-light" id="datos_eliminar_servicios" data-id='<?php echo $ser->id; ?>' >Eliminar</button>
@@ -141,7 +141,7 @@ $usuarios = $dataBase->getUsuarios();
                         <?php foreach($categoria_servicios as $categories): ?>
                         <option value="<?php
                          echo $categories->id; ?>"><?php echo $categories->nombre; ?></option>
-                         <?php endforeach ?>
+                         <?php endforeach; ?>
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
@@ -170,7 +170,7 @@ $usuarios = $dataBase->getUsuarios();
                         <?php foreach($categoria_servicios as $categories): ?>
                         <option value="<?php
                          echo $categories->id; ?>"><?php echo $categories->nombre; ?></option>
-                         <?php endforeach ?>
+                         <?php endforeach; ?>
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
@@ -240,7 +240,7 @@ $usuarios = $dataBase->getUsuarios();
                         <?php foreach($servicios as $serv): ?>
                         <option value="<?php
                          echo $serv->id; ?>"><?php echo $serv->nombre; ?></option>
-                         <?php endforeach ?>
+                         <?php endforeach; ?>
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
@@ -269,7 +269,7 @@ $usuarios = $dataBase->getUsuarios();
                         <?php foreach($servicios as $serv): ?>
                         <option value="<?php
                          echo $serv->id; ?>"><?php echo $serv->nombre; ?></option>
-                         <?php endforeach ?>
+                         <?php endforeach; ?>
                     </select>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
@@ -293,7 +293,8 @@ $usuarios = $dataBase->getUsuarios();
                             </tr>
                         </thead>
                         <tbody>
-                            <?php $contador = 1; $microservicioId = array(); ?>
+                            <?php $contador = 1; ?>
+                            <?php $microservicioId = []; ?>
                             <?php foreach ($sectores as $sector_id => $sector_data): ?>
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
@@ -302,15 +303,15 @@ $usuarios = $dataBase->getUsuarios();
                                     <?php $recomendaciones = explode(',', $sector_data['recomendaciones']);
                                     foreach($recomendaciones as $recomendacion): ?>
                                         <ul>
-                                            <li><?php echo $recomendacion ?></li>
+                                            <li><?php echo $recomendacion; ?></li>
                                         </ul>
-                                    <?php endforeach?>
+                                    <?php endforeach; ?>
                                 </td>
                                 <td>
                                     <ul>
                                     <?php foreach ($sector_data['microservicios'] as $microservicio): ?>
                                     <?php $microservicioId[] = $microservicio['id']; ?>
-                                        <li><?php echo $microservicio['nombre']  ?></li>
+                                        <li><?php echo $microservicio['nombre']; ?></li>
                                         <?php endforeach; ?>
                                     </ul>   
                                 </td>
@@ -341,9 +342,9 @@ $usuarios = $dataBase->getUsuarios();
                     <?php foreach ($microservicios as $ms): ?>
                         <div class="form-check">
                             <label for="microservios-<?php echo $ms->id; ?>" class="form-check-label"><?php echo $ms->nombre; ?></label>
-                            <input type="checkbox" class="form-check-input" name="microservicios_sector" id="microservios-<?php echo $ms->id?>" value="<?php echo $ms->id ?>">
+                            <input type="checkbox" class="form-check-input" name="microservicios_sector" id="microservios-<?php echo $ms->id; ?>" value="<?php echo $ms->id; ?>">
                         </div>
-                        <?php endforeach ?>
+                        <?php endforeach; ?>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit" class="btn btn-outline-dark">Agregar</button>
@@ -365,7 +366,7 @@ $usuarios = $dataBase->getUsuarios();
                             <label for="microservios-<?php echo $ms->id; ?>-editar" class="form-check-label"><?php echo $ms->nombre; ?></label>
                             <input type="checkbox" class="form-check-input" name="microservicios_sector_editar" id="microservicios-<?php echo $ms->id; ?>-editar" value="<?php echo $ms->id; ?>">
                         </div>
-                    <?php endforeach ?>
+                    <?php endforeach; ?>
                     <!-- input oculto para mejorar la seguridad con un Token CSRF-->
                     <input type="hidden" name=<?php echo $token; ?> value="1"/>
                     <button type="submit" class="btn btn-outline-dark">Actualizar</button>
@@ -395,7 +396,8 @@ $usuarios = $dataBase->getUsuarios();
                         </thead>
                         <tbody>
                             <?php $contador = 1;  ?>
-                            <?php foreach ($usuarios as $usuario): if($usuario->eliminado === 'no'){?>
+                            <?php foreach ($usuarios as $usuario): ?>
+                                <?php if($usuario->eliminado === 'no'): ?> 
                             <tr>
                                 <td scope='row' > <?php echo $contador++;?></td>
                                 <td><?php echo $usuario->nombre; ?></td>
@@ -428,7 +430,8 @@ $usuarios = $dataBase->getUsuarios();
                                     <button type="button" id="datos_eliminar_usuario" class="btn btn-outline-light" data-id='<?php echo $usuario->id; ?>' >Eliminar</button>
                                 </td>
                             </tr>
-                            <?php }endforeach; ?>
+                            <?php endif; ?> 
+                            <?php endforeach; ?>
 
                         </tbody>
                     </table>

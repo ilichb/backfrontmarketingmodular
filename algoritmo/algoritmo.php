@@ -1,8 +1,6 @@
 <?php 
 defined('_JEXEC') or die('Acceso restringido');
 
-use Joomla\CMS\Factory;
-
 require_once __DIR__.'/../database/database.php';
 require_once __DIR__.'/ROIyROAS.php';
 
@@ -17,19 +15,18 @@ class Algoritmo
     protected $serviciosAnalisis;
     protected $recomendaciones;
 
-    public function __construct($sector, $servicios, $ROI, $expenses)
-    {
+    public function __construct($sector, $servicios, $ROI, $expenses){
         $this->servicios = $servicios;
         $this->ROI = $ROI;
         $this->expenses = $expenses;
-        $this->recomendaciones = array();
+        $this->recomendaciones = [];
         $this->dataBase = new DataBase;
         $this->microservicios = $this->dataBase->getMicroservicios();
         $this->sectorPlantilla = $this->dataBase->getSectorEconomicoName($sector);
         $this->serviciosAnalisis = $this->dataBase->getServicios();
     }
 
-    public function matchBranding(){
+    public function matchBranding(): float{
         $result = 0;
 
         $serviciosDB = [];
@@ -43,18 +40,14 @@ class Algoritmo
         foreach ($this->microservicios as $microservicio){
             foreach ($this->servicios as $servicio => $servMicroservicio){
                 foreach($servMicroservicio as $microservicioUser){
-                    if(in_array(strtolower($servicio), $serviciosDB)){
+                    if(in_array(strtolower($servicio), $serviciosDB, true)){
                         if(strtolower($microservicio->nombre) === strtolower($microservicioUser)){
                             $result += floatval($microservicio->valor_impacto);
                         }
                     }
-                    if(in_array('desarrollo de sitio web', $servMicroservicio) && in_array('desarrollo de aplicaciones', $servMicroservicio)){
+                    if(in_array('desarrollo de sitio web', $servMicroservicio, true) && in_array('desarrollo de aplicaciones', $servMicroservicio, true)){
                         $result -= 6;
-                        $this->recomendaciones['branding'] = 'Asegúrese de que el diseño y la funcionalidad de su sitio web
-                        y aplicación sean coherentes y complementarios, en lugar de crear experiencias
-                        de usuario inconsistentes. O tambien, establezca prioridades en función de las necesidades de su
-                        negocio y el comportamiento del usuario, y ajuste el enfoque según sea
-                        necesario.';
+                        $this->recomendaciones['branding'] = 'Asegúrese de que el diseño y la funcionalidad de su sitio web y aplicación sean coherentes y complementarios, en lugar de crear experiencias de usuario inconsistentes. O tambien, establezca prioridades en función de las necesidades de su negocio y el comportamiento del usuario, y ajuste el enfoque según sea necesario.';
                     }
                 }
             }
@@ -63,7 +56,7 @@ class Algoritmo
         return round($result, 2);
     }
 
-    public function matchOrganicGrowth(){
+    public function matchOrganicGrowth(): float{
         $result = 0;
 
         $serviciosDB = [];
@@ -77,27 +70,18 @@ class Algoritmo
         foreach ($this->microservicios as $microservicio){
             foreach ($this->servicios as $servicio => $servMicroservicio){
                 foreach($servMicroservicio as $microservicioUser){
-                    if(in_array(strtolower($servicio), $serviciosDB)){
+                    if(in_array(strtolower($servicio), $serviciosDB, true)){
                         if(strtolower($microservicio->nombre) === strtolower($microservicioUser)){
                             $result += floatval($microservicio->valor_impacto);
                         }
                     }
-                    if(in_array('marketing en redes sociales', $servMicroservicio) && in_array('marketing en realidad virtual y aumentada', $servMicroservicio)){
+                    if(in_array('marketing en redes sociales', $servMicroservicio, true) && in_array('marketing en realidad virtual y aumentada', $servMicroservicio, true)){
                         $result -= 3;
-                        $this->recomendaciones['organicGrowth'] = 'Considerar la posibilidad de asignar recursos adicionales a
-                        uno u otro en función de los resultados y el retorno de la inversión.
-                        Marketing en redes sociales y Marketing en realidad virtual y aumentada. O tambien, si es posible, diseñe campañas de marketing integradas que
-                        incorporen elementos de realidad virtual y aumentada en sus esfuerzos de
-                        marketing en redes sociales.
-                        ';
+                        $this->recomendaciones['organicGrowth'] = 'Considerar la posibilidad de asignar recursos adicionales a uno u otro en función de los resultados y el retorno de la inversión. Marketing en redes sociales y Marketing en realidad virtual y aumentada. O tambien, si es posible, diseñe campañas de marketing integradas que incorporen elementos de realidad virtual y aumentada en sus esfuerzos de marketing en redes sociales.';
                     }
-                    if(in_array('marketing de afiliacion', $servMicroservicio) && in_array('marketing en rlaciones publicas', $servMicroservicio)){
+                    if(in_array('marketing de afiliacion', $servMicroservicio, true) && in_array('marketing en rlaciones publicas', $servMicroservicio, true)){
                         $result -= 3;
-                        $this->recomendaciones['organicGrowth2'] = 'Al desarrollar su estrategia de marketing de afiliación, tenga
-                        en cuenta cómo puede afectar la percepción pública de su marca y cómo las
-                        relaciones públicas pueden influir en su programa de afiliados. O tambien, asegúrese de que sus afiliados representen adecuadamente
-                        su marca y trabajen en conjunto con su estrategia de relaciones públicas para
-                        mantener una imagen positiva y coherente.';
+                        $this->recomendaciones['organicGrowth2'] = 'Al desarrollar su estrategia de marketing de afiliación, tenga en cuenta cómo puede afectar la percepción pública de su marca y cómo las relaciones públicas pueden influir en su programa de afiliados. O tambien, asegúrese de que sus afiliados representen adecuadamente su marca y trabajen en conjunto con su estrategia de relaciones públicas para mantener una imagen positiva y coherente.';
                     }
                 }
             }
@@ -106,7 +90,7 @@ class Algoritmo
         return round($result, 2);
     }
 
-    public function matchTotalGrowth(){
+    public function matchTotalGrowth(): float{
         $result = 0;
         
         $serviciosDB = [];
@@ -120,16 +104,14 @@ class Algoritmo
         foreach ($this->microservicios as $microservicio){
             foreach ($this->servicios as $servicio => $servMicroservicio){
                 foreach($servMicroservicio as $microservicioUser){
-                    if(in_array(strtolower($servicio), $serviciosDB)){
+                    if(in_array(strtolower($servicio), $serviciosDB, true)){
                         if(strtolower($microservicio->nombre) === strtolower($microservicioUser)){
                             $result += floatval($microservicio->valor_impacto);
                         }
                     }
-                    if(in_array('marketing de guerrilla', $servMicroservicio) && in_array('publicidad en línea (google ads, facebook ads, etc.)', $servMicroservicio)){
+                    if(in_array('marketing de guerrilla', $servMicroservicio, true) && in_array('publicidad en línea (google ads, facebook ads, etc.)', $servMicroservicio, true)){
                         $result -= 5;
-                        $this->recomendaciones['totalGrowth'] = ': Asegúrese de que su publicidad en línea esté orientada a los
-                        mismos objetivos que sus esfuerzos de marketing de guerrilla para evitar la
-                        dilución del mensaje. O tambien, ';
+                        $this->recomendaciones['totalGrowth'] = ': Asegúrese de que su publicidad en línea esté orientada a los mismos objetivos que sus esfuerzos de marketing de guerrilla para evitar la dilución del mensaje. O tambien, ';
                     }
                 }
             }
@@ -138,7 +120,7 @@ class Algoritmo
         return round($result, 2);
     }
 
-    public function matchSeoLevel(){
+    public function matchSeoLevel(): float{
         $result = 0;
 
         $serviciosDB = [];
@@ -152,17 +134,14 @@ class Algoritmo
         foreach ($this->microservicios as $microservicio){
             foreach ($this->servicios as $servicio => $servMicroservicio){
                 foreach($servMicroservicio as $microservicioUser){
-                    if(in_array(strtolower($servicio), $serviciosDB)){
+                    if(in_array(strtolower($servicio), $serviciosDB, true)){
                         if(strtolower($microservicio->nombre) === strtolower($microservicioUser)){
                             $result += floatval($microservicio->valor_impacto);
                         }
                     }
-                    if(in_array('optimizacion de motores de búsqueda (seo)', $servMicroservicio) && in_array('marketing de aplicaciones', $servMicroservicio)){
+                    if(in_array('optimizacion de motores de búsqueda (seo)', $servMicroservicio, true) && in_array('marketing de aplicaciones', $servMicroservicio, true)){
                         $result -= 4;
-                        $this->recomendaciones['levelSEO'] = 'Monitoree el rendimiento de ambas estrategias y ajuste el
-                        enfoque según sea necesario para evitar conflictos o duplicaciones de esfuerzos.
-                        Optimización de motores de búsqueda (SEO) y Marketing en aplicaciones. O tambien, al desarrollar su estrategia de SEO, tenga en cuenta cómo
-                        puede afectar el rendimiento de su marketing en aplicaciones y viceversa.';
+                        $this->recomendaciones['levelSEO'] = 'Monitoree el rendimiento de ambas estrategias y ajuste el enfoque según sea necesario para evitar conflictos o duplicaciones de esfuerzos. Optimización de motores de búsqueda (SEO) y Marketing en aplicaciones. O tambien, al desarrollar su estrategia de SEO, tenga en cuenta cómo puede afectar el rendimiento de su marketing en aplicaciones y viceversa.';
                     }
                 }
             }
@@ -171,7 +150,7 @@ class Algoritmo
         return round($result, 2);
     }
 
-    public function calculateRoi(){
+    public function calculateRoi(): float{
         $resultCosto = 0;
         $totalRetorno = 0;
 
@@ -180,7 +159,9 @@ class Algoritmo
                 foreach($user as $microUser){
                     if(strtolower($microservicio->nombre) === strtolower($microUser)){
 
-                        $costo = floatval($microservicio->valor_de_costo);$ingresos = floatval($microservicio->valor_de_ingreso); $publicidad = floatval($microservicio->gasto_publicidad);
+                        $costo = floatval($microservicio->valor_de_costo);
+                        $ingresos = floatval($microservicio->valor_de_ingreso); 
+                        $publicidad = floatval($microservicio->gasto_publicidad);
                          
                         $classRoi = new Roi($costo, $ingresos, $publicidad);
 
@@ -237,9 +218,7 @@ class Algoritmo
         $totalServicios = count($this->servicios);
 
         foreach ($this->servicios as $servicio => $micro){
-            $microserviciosTotales = array_filter($this->microservicios, function($microservicio) use ($servicio){
-                return strtolower($microservicio->servicio) === $servicio;
-            });
+            $microserviciosTotales = array_filter($this->microservicios, fn($microservicio) => strtolower($microservicio->servicio) === $servicio);
 
             $todosSeleccionados = true;
             foreach($microserviciosTotales as $microservicioDB){

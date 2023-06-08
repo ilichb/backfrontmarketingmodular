@@ -60,6 +60,6 @@ CREATE TABLE IF NOT EXISTS `usuario` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `categoria_servicios` (nombre) VALUES ('Diseño'), ('Marketing'), ('Video');
+INSERT IGNORE INTO `categoria_servicios` (nombre) VALUES ('Diseño'), ('Marketing'), ('Video');
 
-INSERT INTO `servicios` (nombre, estrategia, categoria_id) VALUES ('Digital', 'branding', 1), ('Diseño 3D', 'branding', 1), ('Editorial', 'branding', 1), ('Fotografia', 'branding', 1), ('Identidad Corporativa', 'branding', 1), ('Ilustracion', 'branding', 1), ('Papeleria', 'branding', 1), ('Socialmedia', 'organicGrowth', 2), ('SEO', 'levelSEO', 2), ('SEM', 'levelSEO', 2), ('ADS Socialmedia', 'totalGrowth', 2);
+INSERT IGNORE INTO `servicios` (nombre, estrategia, categoria_id) VALUES ('Digital', 'branding', 1), ('Diseño 3D', 'branding', 1), ('Editorial', 'branding', 1), ('Fotografia', 'branding', 1), ('Identidad Corporativa', 'branding', 1), ('Ilustracion', 'branding', 1), ('Papeleria', 'branding', 1), ('Socialmedia', 'organicGrowth', 2), ('SEO', 'levelSEO', 2), ('SEM', 'levelSEO', 2), ('ADS Socialmedia', 'totalGrowth', 2);

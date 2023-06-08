@@ -1,20 +1,23 @@
 <?php
+//se evita el acceso directo al documento
+defined('_JEXEC') or die('Acceso restringido');
+
 //primero se inicia con informacion sobre el autor y el plugin
 
 /**
 *@package Joomla.Plugin
-*@subpackage System.plugin_microservicios
-*
+*@subpackage System.pluginMicroservicios
+*@since 4.0
 *@copyright Copyright (c) 2023 Equipo 2 Andromeda. Todos los derechos reservados.
 *@license Lincense
  */
 
-//se evita el acceso directo al documento
-defined('_JEXEC') or die('Acceso restringido');
+defined('JPATH_BASE') or define('JPATH_BASE', __DIR__ . '/../../../');
+defined('JPATH_LIBRARIES') or define('JPATH_LIBRARIES', JPATH_BASE . '/libraries');
 
+require_once JPATH_LIBRARIES . '/src/Plugin/CMSPlugin.php';
+use Joomla\CMS\Exception\Exception;
 use Joomla\CMS\Factory;
-use Joomla\CMS\Plugin\CMSPlugin;
-// use Joomla\Event\SubscriberInterface;
 use Joomla\CMS\Layout\FileLayout;
 use Joomla\CMS\Uri\Uri;
 use Joomla\CMS\Session\Session;
@@ -25,80 +28,85 @@ use Joomla\CMS\Session\Session;
  * El nombre de la clase debe comenzar con 'PlgSystem' seguido del nombre del complemento. Joomla llama a la clase en función del nombre del complemento, por lo que es muy importante que coincidan 
  */ 
 
- class PlgSystemPluginMicroservicios extends CMSPlugin
+ class PlgSystemPluginMicroservicios extends Joomla\CMS\Plugin\CMSPlugin
  {
-
     protected $app;
     protected $session;
     protected $user;
     protected $admin;
+    protected $autoloadLanguage = true;
 
-    public function __construct(){
+    public function __construct(?object &$subject, array $config = []){
         $this->app = Factory::getApplication();
         $this->session = Factory::getSession();
         $this->user = Factory::getUser();
         $this->admin = $this->user->authorise('core.admin');
+        parent::__construct($subject, $config);
 
     }
 
-    public function onContentBeforeDisplay($context, &$article, &$params, $limitstart = 0){
-        //validamos que el usuario no sea admin
-        if($this->app->isClient('administrator')){
-            return;
-         }
- 
-         $this->app->registerEvent('onAjaxPluginMicroservicios', array($this, 'onAjaxPluginMicroservicios'));
-         $document = Factory::getDocument();
- 
-         if($this->admin){
-             $document->addScript(Uri::base().'plugins/system/pluginMicroservicios/js/admin.js');
-             $document->addStyleSheet(Uri::base().'plugins/system/pluginMicroservicios/css/admin.css');
-
-             
-             if($context === 'com_content.article'){
-                 if(strpos($article->text, '{microserviciosFormAdmin}') === false){
-                     return;
-                 }
-     
-                 $article->text = str_replace('{microserviciosFormAdmin}', $this->displayMicroservicios(), $article->text);
-             }
-         } else {
-            $document->addScript(Uri::base().'plugins/system/pluginMicroservicios/PlanModular-Front/bundle.js'); 
-            $document->addStyleSheet(Uri::base().'plugins/system/pluginMicroservicios/PlanModular-Front/styles.css');
-             
-             
-             if($context === 'com_content.article'){
-                 if(strpos($article->text, '{microserviciosForm}') === false){
-                     return;
-                 }
-                 $article->text = str_replace('{microserviciosForm}', $this->displayForm(), $article->text);
-             }
-         }
- 
-         //opcion para renderizar al final de la pagina
-         // //creamos una nueva instancia de la clase FileLayout, la cual, renderiza un diseño de plantilla
-         // $layout = new FileLayout('formulario', __DIR__.'/tmpl');
-         // $form = $layout->render();
- 
-         // $body = $app->getBody();
-         // $body = str_replace('</body>', $form.'</body>', $body);
-         // $app->setBody($body);
+    public function onContentBeforeDisplay(string $context, &$article, &$params, $page = 0){
+        try{
+            //registramos el evento de los llamados Ajax
+            $this->app->registerEvent('onAjaxPluginMicroservicios', [$this, 'onAjaxPluginMicroservicios']);
+            
+            //utilizamos el metodo getDocument(), para agregar los documentos de JS y CSS
+            $document = Factory::getDocument();
+            
+            if($this->admin){
+                $document->addScript(Uri::root(true).'/plugins/system/pluginMicroservicios/js/admin.js');
+                $document->addStyleSheet(Uri::root(true).'/plugins/system/pluginMicroservicios/css/admin.css');
+                
+                if($context === 'com_content.article'){
+                    if(strpos($article->text, '{microserviciosFormAdmin}') === false){
+                        return;
+                    }
+                    
+                    $article->text = str_replace('{microserviciosFormAdmin}', $this->displayMicroservicios(), $article->text);
+                }
+            } else {
+                $tokenUser = $this->app->getFormToken();
+                $document->addScriptOptions('csrf.token', $tokenUser);
+                $document->addScript(Uri::root(true).'/plugins/system/pluginMicroservicios/PlanModular-Front/src/js/main.js');
+                $document->addScript(Uri::root(true).'/plugins/system/pluginMicroservicios/PlanModular-Front/bundle.js'); 
+                $document->addStyleSheet(Uri::root(true).'/plugins/system/pluginMicroservicios/PlanModular-Front/styles.css');
+                
+                if($context === 'com_content.article'){
+                    if(strpos($article->text, '{microserviciosForm}') === false){
+                        return;
+                    }
+                    $article->text = str_replace('{microserviciosForm}', $this->displayForm(), $article->text);
+                }
+            }
+        } catch(Exception $err){
+            echo 'Error: '.$err->getMessage();
+        }
     }
 
     private function displayForm(){
-        $layout = new FileLayout('index', __DIR__.'/PlanModular-Front');
-        return $layout->render();
+        try{
+            $layout = new FileLayout('index', __DIR__.'/plugins/system/pluginMicroservicios/PlanModular-Front');
+
+            return $layout->render();
+        } catch(Exception $err){
+            echo 'Error: '.$err->getMessage();
+        }
     }
 
     private function displayMicroservicios(){
-        $layout = new FileLayout('admin', __DIR__.'/tmpl');
-        return $layout->render();
+        try{
+            $layout = new FileLayout('admin', __DIR__.'/plugins/system/pluginMicroservicios/tmpl');
+            
+            return $layout->render();
+        } catch(Exception $err){
+            echo 'Error: '.$err->getMessage();
+        }
     }
 
-    public function onAjaxPluginMicroservicios(){
+    public function onAjaxPluginMicroservicios(): string{
         //verificamos el token del formulario
-       Session::getFormToken() or jexit(Text::_('Token no valido'));
-
+       Session::checkToken() or die('Token no valido');
+       try{
         $input = $this->app->input;
         $method = $input->getMethod();
 
@@ -110,15 +118,17 @@ use Joomla\CMS\Session\Session;
             $microserviciosForm = $dataBase->getMicroservicios();
             $sectorEco = $dataBase->getSectorEconomico();
 
-            $result = array('servicios' => $servicios, 'microservicios' => $microserviciosForm, 'sectorEconomico' => $sectorEco);
+            $result = [
+                'servicios' => $servicios, 
+                'microservicios' => $microserviciosForm, 'sectorEconomico' => $sectorEco
+            ];
 
             return json_encode($result);
-            exit;
         }
 
         if($method === 'POST'){
             $accion = $input->get('accion', '', 'cmd');
-            $dataResponse = array();
+            $dataResponse = [];
 
             require_once __DIR__.'/algoritmo/algoritmo.php';
             
@@ -162,7 +172,7 @@ use Joomla\CMS\Session\Session;
                             $data = [
                                 'nombre' => $input->get('agregar_nombre_sector', '', 'string'),
                                 'recomendaciones' => $input->get('agregar_recomendaciones_sector', '', 'string'),
-                                'microservicio_id' => $input->get('microservicios_user', array(), 'array')
+                                'microservicio_id' => $input->get('microservicios_user', [], 'array')
                             ];
 
                             $tabla = 'sector_economico';
@@ -170,10 +180,10 @@ use Joomla\CMS\Session\Session;
                             break;
 
                         default: 
-                            break;
+                            $dataResponse['error'] = 'Tipo de accion no válido';
                         }
                     } 
-                if($accion === 'editar'){
+                elseif($accion === 'editar'){
                     //para editar
                     $caso = $input->get('caso', '', 'cmd');
                 
@@ -222,7 +232,7 @@ use Joomla\CMS\Session\Session;
                                 'id' => $input->get('editar_id_sector', 0, 'number'),
                                 'nombre' => $input->get('editar_nombre_sector', '', 'string'),
                                 'recomendaciones' => $input->get('editar_recomendaciones_sector', '', 'string'),
-                                'microservicios' => $input->get('microservicios_sector_editar', array(), 'array')
+                                'microservicios' => $input->get('microservicios_sector_editar', [], 'array')
                             ];
                 
                             $tabla = 'sector_economico';
@@ -231,10 +241,10 @@ use Joomla\CMS\Session\Session;
                             break;
                         
                         case 'editar_usuario':
-                            $data = array(
+                            $data = [
                                 'id' => $input->get('editar_id_usuario', 0, 'number'),
                                 'estado' => $input->get('editar_estado_usuario', '', 'string')
-                            );
+                            ];
 
                             $tabla = 'usuario';
 
@@ -242,11 +252,11 @@ use Joomla\CMS\Session\Session;
                             break;
                         
                         default:
-                            break;
+                        $dataResponse['error'] = 'Tipo de accion no válido';;
                         }
                     }
                     
-                if($accion === 'eliminar'){
+                elseif($accion === 'eliminar'){
                     $caso = $input->get('caso', '', 'cmd');
 
                     switch ($caso) {
@@ -290,14 +300,15 @@ use Joomla\CMS\Session\Session;
                             break;
                         
                         default:
-                            break;
+                        $dataResponse['error'] = 'Tipo de accion no válido';;
                         }
                     }
+                    $dataResponse['success'] = true;
                 } 
                 else {
                     if($this->user){
                         $tipo = $input->getString('tipo', '', 'cmd');
-                        $microserviciosUser = array();
+                        $microserviciosUser = [];
                         switch ($tipo) {
                             case 'userForm':
 
@@ -333,7 +344,7 @@ use Joomla\CMS\Session\Session;
                                 $dataResponse['organicGrowth'] = $organicGrowth;
                                 $dataResponse['totalGrowth'] = $totalGrowth;
                                 $dataResponse['seoLevel'] = $seoLevel;
-                                $dataResponse['country'] = array($country); 
+                                $dataResponse['country'] =[$country]; 
                                 $dataResponse['projectedEarnings'] = $projectedEarning;
                                 $dataResponse['plantillaRelacion'] = $plantilla;
                                 $dataResponse['sales'] = $sales;
@@ -345,12 +356,12 @@ use Joomla\CMS\Session\Session;
 
                             case 'guardarDatos':
 
-                                $data = array( 
+                                $data = [
                                     'nombre' => $name = $input->get('name', '', 'string'),
                                     'email' => $email = $input->get('email', '', 'string'),
                                     'telefono' => $phone = $input->get('phone', '', 'string'),
                                     'empresa' => $company = $input->get('company', '', 'string')
-                                );
+                                ];
                                     $resultados = $this->session->get('dataUser');
                                     $datosMicroservicios = $this->session->get('microserviciosUser');
                                     $sector = $this->session->get('sector');
@@ -370,19 +381,20 @@ use Joomla\CMS\Session\Session;
                                 $dataBase->executeGuardar($data, $tabla, $method);
 
                                 $this->session->clear();
-
+                                $dataResponse['success'] = true;
                                 break;
                                     
                             default:
-                                
                                 break;
                             }
                         }
                     }
-                    $result = array($dataResponse);     
-                    return json_encode($result);
-                
-                    exit;
+                    echo json_encode($dataResponse);
                 }
+            } catch(Exception $e){
+                $dataResponse['success'] = false;
+                $dataResponse['error'] = $e->getMessage();
+                echo json_encode($dataResponse);
             }
+        }
 };

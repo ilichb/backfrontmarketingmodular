@@ -26,7 +26,7 @@ import {
 import { countryArray, } from "../data";
 
 document.addEventListener('DOMContentLoaded', () => {
-    let token = Joomla.getOptions('csrf.token');
+    let token = Joomla.getOptions('csrf.token', '');
     let servicesArray = [];
     let sectorComercialArray = [];
 
@@ -309,6 +309,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
 
                 const formData = new FormData();
+                formData.append(token, '1');
                 formData.append('name', name);
                 formData.append('email', email);
                 formData.append('phone', phone);
@@ -355,6 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
 
                 const formData = new FormData();
+                formData.append(token, '1');
                 formData.append('microServices', JSON.stringify(selectedMicroServices));
                 formData.append('sector-comercial', selectedCommercialSector);
                 formData.append('country', selectedCountry);
@@ -368,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                     .then(response => response.json())
                     .then(data => {
-                        let dataMicroservices = data.data && JSON.parse(data.data[0]);
+                        let dataMicroservices = data.data && JSON.parse(data.data);
 
                         console.log(dataMicroservices);
                         branding = dataMicroservices[0].branding;
